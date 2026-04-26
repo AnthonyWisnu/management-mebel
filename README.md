@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">🏭 Sistem Manajemen Mebel</h1>
+  <h1 align="center">Sistem Manajemen Mebel</h1>
   <p align="center">
     Aplikasi web manajemen operasional usaha mebel — mencakup transaksi, absensi, penggajian, dan dashboard keuangan.
   </p>
@@ -15,7 +15,7 @@
 
 ---
 
-## 📖 Tentang Project
+## Tentang Project
 
 **Sistem Manajemen Mebel** adalah aplikasi web full-stack yang dirancang untuk mengelola operasional usaha mebel skala kecil hingga menengah. Aplikasi ini mencakup pencatatan transaksi pembelian & penjualan, manajemen absensi & penggajian karyawan, serta dashboard ringkasan keuangan real-time untuk pemilik usaha.
 
@@ -23,38 +23,38 @@ Dibangun dengan arsitektur modern menggunakan **Next.js App Router** dan **Supab
 
 ---
 
-## ✨ Fitur Utama
+## Fitur Utama
 
-### 📊 Dashboard Keuangan (Admin)
+### Dashboard Keuangan (Admin)
 - KPI Cards: Uang Masuk, Uang Keluar, HPP, dan Profit Bersih
 - Grafik penjualan vs pembelian (line chart)
 - Top 5 produk terlaris (bar chart)
 - Distribusi pembelian per supplier (pie chart)
 - Filter periode: Hari Ini, 7 Hari, Bulan Ini, Bulan Lalu, Tahun Ini, Custom Range
 
-### 🛒 Transaksi
+### Transaksi
 - **Pembelian** — Pencatatan pembelian ke supplier dengan multi-item detail
 - **Penjualan** — Pencatatan penjualan ke pelanggan dengan HPP per item (admin only)
 - Harga beli, harga jual, dan HPP diinput manual per transaksi (fleksibel)
 - Perhitungan subtotal & total otomatis
 
-### 📋 Master Data
+### Master Data
 - Manajemen Supplier, Pelanggan, Karyawan, Produk, dan Kategori Produk
 - CRUD lengkap dengan search, filter, pagination, dan sortable columns
 - Soft delete untuk menjaga referensi historis
 
-### 👥 Absensi & Penggajian
+### Absensi & Penggajian
 - Pencatatan absensi harian: shift setengah hari, satu hari, dan lembur
 - Nominal gaji otomatis dari master karyawan (dapat di-override)
 - Generate penggajian mingguan otomatis dari rekap absensi
 - Cetak slip gaji dalam format PDF
 
-### 📈 Laporan & Export
+### Laporan & Export
 - Laporan Penjualan, Pembelian, Profit, Absensi, dan Penggajian
 - Export ke **PDF** dan **Excel**
 - Filter berdasarkan rentang tanggal, pelanggan, supplier, karyawan, dll.
 
-### 🔐 Role-Based Access Control
+### Role-Based Access Control
 | Fitur | Admin | Pegawai |
 |---|:---:|:---:|
 | Dashboard Keuangan | ✅ | ❌ |
@@ -87,7 +87,7 @@ Dibangun dengan arsitektur modern menggunakan **Next.js App Router** dan **Supab
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prasyarat
 
@@ -161,7 +161,7 @@ Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
 ---
 
-## 📁 Struktur Project
+## Struktur Project
 
 ```
 management-mebel/
@@ -208,7 +208,7 @@ management-mebel/
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 Aplikasi menggunakan **Supabase (PostgreSQL)** dengan tabel-tabel berikut:
 
@@ -231,7 +231,7 @@ Semua tabel dilindungi **Row Level Security (RLS)** berdasarkan role user.
 
 ---
 
-## 📱 Responsive Design
+## Responsive Design
 
 Aplikasi dirancang **mobile-first** dan berfungsi penuh di semua ukuran layar:
 
@@ -241,7 +241,7 @@ Aplikasi dirancang **mobile-first** dan berfungsi penuh di semua ukuran layar:
 
 ---
 
-## 🌐 Deployment
+## Deployment
 
 ### Deploy ke Vercel
 
@@ -257,12 +257,12 @@ Jangan lupa update **Site URL** dan **Redirect URLs** di Supabase Dashboard > Au
 
 ---
 
-## 📄 License
+## License
 
 Project ini bersifat private dan digunakan untuk keperluan internal.
 
 ---
 
 <p align="center">
-  Dibuat dengan ❤️ menggunakan Next.js & Supabase
+  Dibuat dengan menggunakan Next.js & Supabase
 </p>
