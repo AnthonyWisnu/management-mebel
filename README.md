@@ -231,7 +231,7 @@ Semua tabel dilindungi **Row Level Security (RLS)** berdasarkan role user.
 
 ---
 
-## 📱 Responsive Design
+## Responsive Design
 
 Aplikasi dirancang **mobile-first** dan berfungsi penuh di semua ukuran layar:
 
