@@ -89,12 +89,12 @@ export async function createPenjualan(
   const no_faktur = input.no_faktur?.trim() || generateNoFaktur("PJ")
 
   const total_penjualan = input.items.reduce(
-    (sum, item) => sum + Number(item.qty) * Number(item.harga_jual_satuan),
+    (sum, item) => sum + Math.round(Number(item.qty) * Number(item.harga_jual_satuan)),
     0
   )
   const total_hpp = isAdmin
     ? input.items.reduce(
-        (sum, item) => sum + Number(item.qty) * Number(item.hpp_satuan ?? 0),
+        (sum, item) => sum + Math.round(Number(item.qty) * Number(item.hpp_satuan ?? 0)),
         0
       )
     : 0
@@ -122,9 +122,9 @@ export async function createPenjualan(
     qty: Number(item.qty),
     harga_jual_satuan: Number(item.harga_jual_satuan),
     hpp_satuan: isAdmin ? Number(item.hpp_satuan ?? 0) : 0,
-    subtotal_jual: Number(item.qty) * Number(item.harga_jual_satuan),
+    subtotal_jual: Math.round(Number(item.qty) * Number(item.harga_jual_satuan)),
     subtotal_hpp: isAdmin
-      ? Number(item.qty) * Number(item.hpp_satuan ?? 0)
+      ? Math.round(Number(item.qty) * Number(item.hpp_satuan ?? 0))
       : 0,
   }))
 
@@ -166,7 +166,7 @@ export async function updatePenjualan(
   if (stokError.error) return stokError
 
   const total_penjualan = input.items.reduce(
-    (sum, item) => sum + Number(item.qty) * Number(item.harga_jual_satuan),
+    (sum, item) => sum + Math.round(Number(item.qty) * Number(item.harga_jual_satuan)),
     0
   )
 
@@ -214,9 +214,9 @@ export async function updatePenjualan(
     qty: Number(item.qty),
     harga_jual_satuan: Number(item.harga_jual_satuan),
     hpp_satuan: isAdmin ? Number(item.hpp_satuan ?? 0) : 0,
-    subtotal_jual: Number(item.qty) * Number(item.harga_jual_satuan),
+    subtotal_jual: Math.round(Number(item.qty) * Number(item.harga_jual_satuan)),
     subtotal_hpp: isAdmin
-      ? Number(item.qty) * Number(item.hpp_satuan ?? 0)
+      ? Math.round(Number(item.qty) * Number(item.hpp_satuan ?? 0))
       : 0,
   }))
 

@@ -22,7 +22,7 @@ export default async function PembelianBaruPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/pembelian"
-          className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
           aria-label="Kembali"
         >
           <ChevronLeft className="h-5 w-5" />

@@ -18,108 +18,46 @@
 
 ## P0 — Kritis (Keamanan)
 
-### 1. Middleware tidak memproteksi seluruh rute
+### 1. ~~Middleware tidak memproteksi seluruh rute~~ ✅ Selesai
 
-**File:** `middleware.ts`
-
-Saat ini middleware hanya berjalan di `/` (redirect ke `/dashboard`). Rute seperti `/api/*`, `/pembelian/*`, `/users/*` tidak diproteksi di level middleware — hanya mengandalkan `requireAdmin()` / `requireAuth()` di dalam Server Actions dan halaman.
-
-**Risiko:** Jika ada halaman atau API route yang lupa memanggil `requireAdmin()`, route tersebut bisa diakses tanpa autentikasi.
-
-**Perbaikan:**
-```typescript
-// middleware.ts
-export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|login).*)",
-  ],
-}
-// Cek session di semua rute, redirect ke /login jika tidak ada
-```
-
-**Effort:** S (2–3 jam)
+- `middleware.ts` dibuat di root project
+- Menggunakan `supabase.auth.getUser()` (validasi ke server, bukan hanya cookie) untuk cek sesi
+- Redirect ke `/login` jika belum login, redirect ke `/dashboard` jika sudah login tapi akses `/login`
+- Matcher: semua rute kecuali `_next/static`, `_next/image`, `favicon.ico`, dan `api/`
 
 ---
 
-### 2. RLS tabel `penggajian` terlalu terbuka
+### 2. ~~RLS tabel `penggajian` terlalu terbuka~~ ✅ Selesai
 
-**File:** Supabase RLS policy
-
-Policy `penggajian` saat ini mengizinkan semua authenticated user membaca dan memodifikasi data gaji semua karyawan. Karyawan seharusnya hanya bisa melihat penggajian miliknya sendiri (jika ada fitur self-service).
-
-**Perbaikan:**
-```sql
--- Baca: admin bisa semua, pegawai hanya miliknya
-CREATE POLICY "penggajian_select" ON penggajian
-  FOR SELECT USING (
-    get_user_role() = 'admin'
-    OR karyawan_id IN (
-      SELECT id FROM karyawan WHERE user_id = auth.uid()
-    )
-  );
-```
-
-**Effort:** S (1–2 jam)
+- `supabase/migrations/009_rls_security_patch2.sql`
+- SELECT, INSERT, UPDATE penggajian sekarang hanya untuk `get_user_role() = 'admin'`
+- Catatan: tabel `karyawan` tidak punya kolom `user_id` sehingga tidak bisa filter "per karyawan", jadi dibatasi admin-only sepenuhnya
 
 ---
 
-### 3. RLS tabel `absensi` — INSERT terlalu terbuka
+### 3. ~~RLS tabel `absensi` — INSERT terlalu terbuka~~ ✅ Selesai
 
-**File:** Supabase RLS policy
-
-Policy INSERT pada `absensi` memungkinkan semua authenticated user menambah absensi untuk karyawan manapun, termasuk memalsukan nominal.
-
-**Perbaikan:**
-```sql
--- INSERT hanya admin
-CREATE POLICY "absensi_insert" ON absensi
-  FOR INSERT WITH CHECK (get_user_role() = 'admin');
-```
-
-**Effort:** XS (30 menit)
+- `supabase/migrations/009_rls_security_patch2.sql`
+- INSERT dan UPDATE absensi sekarang hanya untuk admin
 
 ---
 
-### 4. Validasi file upload hanya di client-side
+### 4. ~~Validasi file upload hanya di client-side~~ ✅ Selesai
 
-**File:** `components/ui/NotaUpload.tsx`
-
-Validasi tipe file (jpg/png/pdf) dan ukuran (5MB) hanya dilakukan di browser. Pengguna bisa bypass validasi ini dan mengunggah file berbahaya langsung ke Supabase Storage.
-
-**Perbaikan:**
-- Tambahkan validasi di Supabase Storage policy menggunakan `metadata->>'mimetype'`
-- Atau buat API route yang memvalidasi file sebelum diteruskan ke Storage
-
-```sql
--- Contoh policy Storage dengan validasi mimetype
-CREATE POLICY "nota_insert" ON storage.objects
-  FOR INSERT WITH CHECK (
-    bucket_id = 'nota-transaksi'
-    AND (storage.foldername(name))[1] IN ('pembelian', 'penjualan')
-    AND (metadata->>'mimetype') IN ('image/jpeg','image/png','image/webp','application/pdf')
-    AND octet_length(content) <= 5242880
-  );
-```
-
-**Effort:** M (3–4 jam)
+- `app/api/upload/nota/route.ts` — API route baru yang:
+  - Memvalidasi autentikasi (401 jika belum login)
+  - Mengecek ukuran file (≤ 5MB)
+  - Memvalidasi tipe file menggunakan **magic bytes** (tidak bisa dimanipulasi browser): JPEG (FF D8 FF), PNG (89 50 4E 47), PDF (25 50 44 46), WebP (RIFF...WEBP)
+  - Upload ke Supabase Storage via server (bukan browser langsung)
+- `components/ui/NotaUpload.tsx` — diubah dari upload langsung ke Supabase menjadi POST ke `/api/upload/nota`
 
 ---
 
-### 5. HPP (Harga Pokok Penjualan) terekspos ke role `pegawai`
+### 5. ~~HPP terekspos ke role `pegawai`~~ ✅ Selesai
 
-**File:** `lib/actions/laporan.ts`, `app/(dashboard)/laporan/laporan-client.tsx`
-
-Kolom `subtotal_hpp` dan `total_hpp` di laporan penjualan diambil dari database untuk semua user, lalu disembunyikan hanya di level UI (`isAdmin` prop). Data HPP tetap ada di response JSON yang bisa dilihat di DevTools browser.
-
-**Perbaikan:**
-```typescript
-// Di server action getLaporanPenjualan
-const cols = isAdmin
-  ? "..., subtotal_hpp"
-  : "..."; // tanpa kolom HPP
-```
-
-**Effort:** S (2 jam)
+- `lib/actions/laporan.ts` — `getLaporanPenjualan()` sekarang menggunakan SELECT berbeda berdasarkan role:
+  - Admin: termasuk `hpp_satuan`, `subtotal_hpp`, `total_hpp`
+  - Pegawai: kolom HPP **tidak di-SELECT sama sekali** dari database
 
 ---
 
@@ -366,61 +304,35 @@ Pengguna tidak tahu berapa total data yang ada. Tidak ada info "Menampilkan X da
 
 ## P3 — Tech Debt (Kode)
 
-### 22. Duplikasi fungsi formatter di banyak file
+### 22. ~~Duplikasi fungsi formatter di banyak file~~ ✅ Selesai
 
-**File:** `components/pdf/LaporanPDF.tsx`, `components/pdf/SlipGajiPDF.tsx`, `lib/utils.ts` (jika ada)
-
-Fungsi `fmtRupiah` dan `fmtTgl` dideklarasikan ulang di setiap file PDF. Lebih baik di-extract ke satu utility.
-
-**Perbaikan:**
-```typescript
-// lib/format.ts
-export function fmtRupiah(v: number): string { ... }
-export function fmtTgl(dateStr: string): string { ... }
-```
-
-**Effort:** XS (1 jam)
+- `LaporanPDF.tsx` dan `SlipGajiPDF.tsx` kini import `formatRupiah` dan `formatTanggal` dari `@/lib/utils`
+- Deklarasi lokal `fmtRupiah` / `fmtTgl` / `fmtTanggal` dihapus dari kedua file PDF
+- Helper `fmtPeriode` di SlipGajiPDF tetap ada (lokal) karena hanya dipakai di situ, menggunakan `formatTanggal` yang di-import
 
 ---
 
-### 23. Penggunaan `any[]` dan implicit `any` di beberapa tempat
+### 23. ~~Penggunaan `any[]` dan implicit `any` di beberapa tempat~~ ✅ Selesai
 
-**File:** Berbagai server actions dan komponen
-
-TypeScript strict mode tapi beberapa tempat masih menggunakan `any` secara implisit. Ini mengurangi manfaat type safety.
-
-**Perbaikan:** Audit dengan `tsc --noEmit` dan perbaiki semua `any` yang muncul. Gunakan tipe yang spesifik atau `unknown` dengan type guard.
-
-**Effort:** M (3–4 jam)
+- `lib/actions/laporan.ts`: Didefinisikan tipe private `PenjualanWithItems`, `PembelianWithItems`, `PenjualanProfitRow`, `PembelianProfitRow`, `PenggajianProfitRow`, `AbsensiQueryRow`, `PenggajianQueryRow` — menggantikan semua `any[]`/`any`
+- `lib/actions/dashboard.ts`: Didefinisikan tipe `PenjualanDash`, `PembelianDash`, `PenggajianDash`, `PenjualanItemDash` — menggantikan semua `any[]`
+- Semua komentar `// eslint-disable-next-line @typescript-eslint/no-explicit-any` dihapus
+- Cast menggunakan `as unknown as Type[]` karena Supabase JS client (tanpa generated types) menginfer nested join sebagai array, padahal runtime value adalah objek
 
 ---
 
-### 24. Kalkulasi keuangan menggunakan floating-point JavaScript
+### 24. ~~Kalkulasi keuangan menggunakan floating-point JavaScript~~ ✅ Selesai
 
-**File:** Semua kalkulasi subtotal di forms dan server actions
-
-`qty * harga_jual` menggunakan aritmetika float JavaScript yang bisa menghasilkan error presisi (contoh: `0.1 + 0.2 = 0.30000000000000004`).
-
-**Perbaikan:** Gunakan integer (dalam rupiah penuh, tanpa desimal) atau library `decimal.js`/`big.js`:
-
-```typescript
-import Decimal from "decimal.js"
-const subtotal = new Decimal(qty).times(harga_jual_satuan).toNumber()
-```
-
-**Effort:** M (3–5 jam)
+- `lib/actions/penjualan.ts`: Semua `Number(qty) * Number(harga)` di-wrap dengan `Math.round()` — berlaku untuk `total_penjualan`, `total_hpp`, `subtotal_jual`, `subtotal_hpp`
+- `lib/actions/pembelian.ts`: Semua `Number(qty) * Number(harga)` di-wrap dengan `Math.round()` — berlaku untuk `total` dan `subtotal`
+- Pendekatan `Math.round()` dipilih karena Rupiah adalah mata uang integer (tidak ada desimal), cukup tanpa library tambahan
 
 ---
 
-### 25. `README.md` conflict marker (UU status di git)
+### 25. ~~`README.md` conflict marker (UU status di git)~~ ✅ Selesai
 
-**File:** `README.md`
-
-Status git menunjukkan `UU README.md` (unmerged/conflict). File ini perlu di-resolve.
-
-**Perbaikan:** Resolve merge conflict di README.md dan commit.
-
-**Effort:** XS (15 menit)
+- Dua conflict marker di-resolve, memilih versi HEAD (formatting rapi, tanpa typo "Keuanganm")
+- File clean tanpa `<<<<<<<`/`=======`/`>>>>>>>` marker
 
 ---
 

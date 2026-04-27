@@ -3,11 +3,8 @@
 import { useRef, useState } from "react"
 import { FileImage, FileText, Upload, X, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { createClient } from "@/lib/supabase/client"
 
-const MAX_SIZE = 5 * 1024 * 1024 // 5MB
-const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "application/pdf"]
-const BUCKET = "nota-transaksi"
+const MAX_SIZE = 5 * 1024 * 1024 // 5MB — client-side pre-check saja, validasi sesungguhnya di API
 
 interface NotaUploadProps {
   folder: "pembelian" | "penjualan"
@@ -43,10 +40,7 @@ export function NotaUpload({
 
     setUploadError(null)
 
-    if (!ACCEPTED.includes(file.type)) {
-      setUploadError("Format tidak didukung. Gunakan JPG, PNG, WEBP, atau PDF.")
-      return
-    }
+    // Pre-check ukuran di client agar UX cepat
     if (file.size > MAX_SIZE) {
       setUploadError("Ukuran file maksimal 5MB.")
       return
@@ -54,7 +48,7 @@ export function NotaUpload({
 
     setFileName(file.name)
 
-    if (file.type !== "application/pdf") {
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
       const objectUrl = URL.createObjectURL(file)
       setPreview(objectUrl)
     } else {
@@ -63,19 +57,17 @@ export function NotaUpload({
 
     setUploading(true)
     try {
-      const supabase = createClient()
-      const ext = file.name.split(".").pop() ?? "jpg"
-      const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.${ext}`
+      const form = new FormData()
+      form.append("file", file)
+      form.append("folder", folder)
 
-      const { error } = await supabase.storage
-        .from(BUCKET)
-        .upload(path, file, { upsert: false })
+      const res = await fetch("/api/upload/nota", { method: "POST", body: form })
+      const json = await res.json()
 
-      if (error) throw error
+      if (!res.ok) throw new Error(json.error ?? "Gagal upload")
 
-      const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
       setRemoved(false)
-      onUploadComplete(data.publicUrl)
+      onUploadComplete(json.url as string)
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gagal upload"
       setUploadError(msg)

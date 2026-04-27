@@ -151,7 +151,7 @@ export function PenjualanForm({
         {/* INFORMASI PENJUALAN */}
         <Card>
           <CardContent className="p-4 md:p-6 space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="text-sm font-semibold text-muted-foreground">
               Informasi Penjualan
             </p>
 
@@ -239,7 +239,7 @@ export function PenjualanForm({
         {/* NOTA */}
         <Card>
           <CardContent className="p-4 md:p-6 space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="text-sm font-semibold text-muted-foreground">
               Nota / Foto Faktur
             </p>
             <NotaUpload
@@ -451,7 +451,7 @@ export function PenjualanForm({
               <Card key={field.id}>
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <span className="text-sm font-semibold text-muted-foreground">
                       Item {index + 1}
                     </span>
                     <Button

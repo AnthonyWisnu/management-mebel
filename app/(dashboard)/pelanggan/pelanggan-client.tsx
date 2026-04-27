@@ -89,7 +89,7 @@ export function PelangganPageClient({ initialData, role }: PelangganPageClientPr
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon"
             onClick={() => handleEdit(row.original)}
             aria-label="Edit"
           >
@@ -98,7 +98,7 @@ export function PelangganPageClient({ initialData, role }: PelangganPageClientPr
           {isAdmin && (
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               className="text-destructive hover:text-destructive"
               onClick={() => setDeleteTarget(row.original)}
               aria-label="Hapus"
@@ -141,7 +141,7 @@ export function PelangganPageClient({ initialData, role }: PelangganPageClientPr
           <div className="flex items-center gap-1 shrink-0">
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               onClick={() => handleEdit(p)}
               aria-label="Edit"
             >
@@ -150,7 +150,7 @@ export function PelangganPageClient({ initialData, role }: PelangganPageClientPr
             {isAdmin && (
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 className="text-destructive hover:text-destructive"
                 onClick={() => setDeleteTarget(p)}
                 aria-label="Hapus"

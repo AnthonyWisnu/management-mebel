@@ -3,6 +3,57 @@
 import { createClient } from "@/lib/supabase/server"
 import { requireAuth, requireAdmin } from "@/lib/actions/auth"
 
+// Private response shapes for Supabase nested queries
+type PenjualanWithItems = {
+  no_faktur: string | null
+  tanggal: string
+  total_penjualan: number
+  total_hpp?: number
+  pelanggan: { nama: string } | null
+  penjualan_item: Array<{
+    qty: number
+    harga_jual_satuan: number
+    hpp_satuan?: number
+    subtotal_jual: number
+    subtotal_hpp?: number
+    produk: { nama: string } | null
+  }>
+}
+
+type PembelianWithItems = {
+  no_faktur: string | null
+  tanggal: string
+  total: number
+  supplier: { nama: string } | null
+  pembelian_item: Array<{
+    qty: number
+    harga_beli_satuan: number
+    subtotal: number
+    produk: { nama: string } | null
+  }>
+}
+
+type PenjualanProfitRow = { tanggal: string; total_penjualan: number; total_hpp: number }
+type PembelianProfitRow = { tanggal: string; total: number }
+type PenggajianProfitRow = { periode_selesai: string; total_dibayar: number }
+
+type AbsensiQueryRow = {
+  tanggal: string
+  tipe_shift: string
+  nominal: number
+  catatan: string | null
+  karyawan: { nama: string } | null
+}
+
+type PenggajianQueryRow = {
+  periode_mulai: string
+  periode_selesai: string
+  total_gaji_kalkulasi: number
+  total_dibayar: number
+  status: string
+  karyawan: { nama: string } | null
+}
+
 // ─── Laporan Penjualan ───────────────────────────────────────────────────────
 
 export interface LaporanPenjualanRow {
@@ -31,11 +82,13 @@ export async function getLaporanPenjualan(
   const isAdmin = profile.role === "admin"
   const supabase = await createClient()
 
+  const selectCols = isAdmin
+    ? "no_faktur, tanggal, total_penjualan, total_hpp, pelanggan(nama), penjualan_item(qty, harga_jual_satuan, hpp_satuan, subtotal_jual, subtotal_hpp, produk(nama))"
+    : "no_faktur, tanggal, total_penjualan, pelanggan(nama), penjualan_item(qty, harga_jual_satuan, subtotal_jual, produk(nama))"
+
   let q = supabase
     .from("penjualan")
-    .select(
-      "no_faktur, tanggal, total_penjualan, total_hpp, pelanggan(nama), penjualan_item(qty, harga_jual_satuan, hpp_satuan, subtotal_jual, subtotal_hpp, produk(nama))"
-    )
+    .select(selectCols)
     .is("deleted_at", null)
     .order("tanggal", { ascending: false })
 
@@ -47,10 +100,8 @@ export async function getLaporanPenjualan(
   if (error) throw new Error(error.message)
 
   const rows: LaporanPenjualanRow[] = []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  for (const pj of (data ?? []) as any[]) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    for (const item of (pj.penjualan_item ?? []) as any[]) {
+  for (const pj of (data ?? []) as unknown as PenjualanWithItems[]) {
+    for (const item of pj.penjualan_item) {
       rows.push({
         no_faktur: pj.no_faktur,
         tanggal: pj.tanggal,
@@ -109,10 +160,8 @@ export async function getLaporanPembelian(
   if (error) throw new Error(error.message)
 
   const rows: LaporanPembelianRow[] = []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  for (const pb of (data ?? []) as any[]) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    for (const item of (pb.pembelian_item ?? []) as any[]) {
+  for (const pb of (data ?? []) as unknown as PembelianWithItems[]) {
+    for (const item of pb.pembelian_item) {
       rows.push({
         no_faktur: pb.no_faktur,
         tanggal: pb.tanggal,
@@ -180,12 +229,9 @@ export async function getLaporanProfit(
     })(),
   ])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const penjualans: any[] = penjualanResult.data ?? []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pembelians: any[] = pembelianResult.data ?? []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const penggajians: any[] = penggajianResult.data ?? []
+  const penjualans: PenjualanProfitRow[] = penjualanResult.data ?? []
+  const pembelians: PembelianProfitRow[] = pembelianResult.data ?? []
+  const penggajians: PenggajianProfitRow[] = penggajianResult.data ?? []
 
   // Aggregate by date
   const map = new Map<
@@ -257,8 +303,7 @@ export async function getLaporanAbsensi(
   const { data, error } = await q
   if (error) throw new Error(error.message)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (data ?? []).map((a: any) => ({
+  return (data as unknown as AbsensiQueryRow[] ?? []).map((a) => ({
     tanggal: a.tanggal,
     karyawan_nama: a.karyawan?.nama ?? "—",
     tipe_shift: a.tipe_shift,
@@ -302,8 +347,7 @@ export async function getLaporanPenggajian(
   const { data, error } = await q
   if (error) throw new Error(error.message)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (data ?? []).map((p: any) => ({
+  return (data as unknown as PenggajianQueryRow[] ?? []).map((p) => ({
     periode_mulai: p.periode_mulai,
     periode_selesai: p.periode_selesai,
     karyawan_nama: p.karyawan?.nama ?? "—",

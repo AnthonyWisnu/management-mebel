@@ -107,7 +107,7 @@ export function UsersPageClient({ initialUsers }: UsersPageClientProps) {
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon"
             onClick={() => handleEdit(row.original)}
             aria-label="Edit user"
           >
@@ -115,7 +115,7 @@ export function UsersPageClient({ initialUsers }: UsersPageClientProps) {
           </Button>
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon"
             onClick={() => handleToggleActive(row.original)}
             aria-label={row.original.aktif ? "Nonaktifkan user" : "Aktifkan user"}
             className={

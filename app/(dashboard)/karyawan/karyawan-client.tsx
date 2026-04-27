@@ -98,7 +98,7 @@ export function KaryawanPageClient({ initialData, role }: KaryawanPageClientProp
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon"
             onClick={() => handleEdit(row.original)}
             aria-label="Edit"
           >
@@ -107,7 +107,7 @@ export function KaryawanPageClient({ initialData, role }: KaryawanPageClientProp
           {isAdmin && (
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               className="text-destructive hover:text-destructive"
               onClick={() => setDeleteTarget(row.original)}
               aria-label="Hapus"
@@ -165,7 +165,7 @@ export function KaryawanPageClient({ initialData, role }: KaryawanPageClientProp
           <div className="flex items-center gap-1 shrink-0">
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               onClick={() => handleEdit(k)}
               aria-label="Edit"
             >
@@ -174,7 +174,7 @@ export function KaryawanPageClient({ initialData, role }: KaryawanPageClientProp
             {isAdmin && (
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 className="text-destructive hover:text-destructive"
                 onClick={() => setDeleteTarget(k)}
                 aria-label="Hapus"

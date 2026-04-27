@@ -1,9 +1,5 @@
 <p align="center">
-<<<<<<< HEAD
   <h1 align="center">Sistem Manajemen Mebel</h1>
-=======
-  <h1 align="center"> Sistem Manajemen Mebel</h1>
->>>>>>> 8273e323135a236b9828f16b9c922e7963951bab
   <p align="center">
     Aplikasi web manajemen operasional usaha mebel — mencakup transaksi, absensi, penggajian, dan dashboard keuangan.
   </p>
@@ -59,7 +55,6 @@ Dibangun dengan arsitektur modern menggunakan **Next.js App Router** dan **Supab
 - Filter berdasarkan rentang tanggal, pelanggan, supplier, karyawan, dll.
 
 ### Role-Based Access Control
-<<<<<<< HEAD
 | Fitur | Admin | Pegawai |
 |---|:---:|:---:|
 | Dashboard Keuangan | ✅ | ❌ |
@@ -70,18 +65,6 @@ Dibangun dengan arsitektur modern menggunakan **Next.js App Router** dan **Supab
 | Laporan & Export | ✅ | ✅ |
 | Manajemen User | ✅ | ❌ |
 | Hapus Data | ✅ | ❌ |
-=======
-|          Fitur       | Admin |    Pegawai   |
-|----------------------|-------|--------------|
-| Dashboard Keuanganm  | ✅   |       ❌     |
-| Transaksi Pembelianm | ✅   |       ❌     |
-| Transaksi Penjualan  | ✅   |       ✅     |
-| Master Data (CRUD)   | Full  | Tanpa Delete |
-| Absensi & Penggajian | ✅   |       ✅     |
-| Laporan & Export     | ✅   |       ✅     |
-| Manajemen User       | ✅   |       ❌     |
-| Hapus Data           | ✅   |       ❌     |
->>>>>>> 8273e323135a236b9828f16b9c922e7963951bab
 
 ---
 

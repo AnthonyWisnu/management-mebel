@@ -7,17 +7,10 @@ const TIPE_SHIFT_LABEL: Record<TipeShift, string> = {
   lembur: "Lembur",
 }
 
-function fmtRupiah(v: number) {
-  return "Rp " + Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-}
-
-function fmtTanggal(dateStr: string) {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })
-}
+import { formatRupiah, formatTanggal } from "@/lib/utils"
 
 function fmtPeriode(mulai: string, selesai: string) {
-  return `${fmtTanggal(mulai)} – ${fmtTanggal(selesai)}`
+  return `${formatTanggal(mulai)} – ${formatTanggal(selesai)}`
 }
 
 const s = StyleSheet.create({
@@ -97,7 +90,7 @@ export function SlipGajiPDF({ penggajian }: SlipGajiPDFProps) {
           {penggajian.tanggal_bayar && (
             <View style={s.infoBlock}>
               <Text style={s.infoLabel}>Tanggal Bayar</Text>
-              <Text style={s.infoValue}>{fmtTanggal(penggajian.tanggal_bayar)}</Text>
+              <Text style={s.infoValue}>{formatTanggal(penggajian.tanggal_bayar)}</Text>
             </View>
           )}
         </View>
@@ -115,9 +108,9 @@ export function SlipGajiPDF({ penggajian }: SlipGajiPDFProps) {
             </View>
             {absensiList.map((a) => (
               <View key={a.id} style={s.tableRow}>
-                <Text style={s.colDate}>{fmtTanggal(a.tanggal)}</Text>
+                <Text style={s.colDate}>{formatTanggal(a.tanggal)}</Text>
                 <Text style={s.colShift}>{TIPE_SHIFT_LABEL[a.tipe_shift]}</Text>
-                <Text style={s.colNominal}>{fmtRupiah(a.nominal)}</Text>
+                <Text style={s.colNominal}>{formatRupiah(a.nominal)}</Text>
               </View>
             ))}
           </View>
@@ -127,11 +120,11 @@ export function SlipGajiPDF({ penggajian }: SlipGajiPDFProps) {
         <View style={s.totalSection}>
           <View style={s.totalRow}>
             <Text style={s.totalLabel}>Total Gaji Kalkulasi</Text>
-            <Text style={s.totalValue}>{fmtRupiah(penggajian.total_gaji_kalkulasi)}</Text>
+            <Text style={s.totalValue}>{formatRupiah(penggajian.total_gaji_kalkulasi)}</Text>
           </View>
           <View style={s.totalDibayarRow}>
             <Text style={s.totalDibayarLabel}>Total Dibayar</Text>
-            <Text style={s.totalDibayarValue}>{fmtRupiah(penggajian.total_dibayar)}</Text>
+            <Text style={s.totalDibayarValue}>{formatRupiah(penggajian.total_dibayar)}</Text>
           </View>
           {penggajian.catatan && (
             <View style={{ marginTop: 10 }}>

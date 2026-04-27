@@ -23,7 +23,7 @@ export default async function PenjualanBaruPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/penjualan"
-          className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
           aria-label="Kembali"
         >
           <ChevronLeft className="h-5 w-5" />

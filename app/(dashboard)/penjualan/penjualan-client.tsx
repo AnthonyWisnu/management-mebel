@@ -145,7 +145,7 @@ export function PenjualanPageClient({
               href={row.original.nota_url}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
               aria-label="Lihat nota"
             >
               <FileImage className="h-4 w-4 text-muted-foreground" />
@@ -153,7 +153,7 @@ export function PenjualanPageClient({
           )}
           <Link
             href={`/penjualan/${row.original.id}/edit`}
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
             aria-label="Edit"
           >
             <Pencil className="h-4 w-4" />
@@ -161,7 +161,7 @@ export function PenjualanPageClient({
           {isAdmin && (
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               className="text-destructive hover:text-destructive"
               onClick={() => setDeleteTarget(row.original)}
               aria-label="Hapus"
@@ -210,7 +210,7 @@ export function PenjualanPageClient({
                 href={p.nota_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+                className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
                 aria-label="Lihat nota"
               >
                 <FileImage className="h-4 w-4 text-muted-foreground" />
@@ -218,7 +218,7 @@ export function PenjualanPageClient({
             )}
             <Link
               href={`/penjualan/${p.id}/edit`}
-              className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
               aria-label="Edit"
             >
               <Pencil className="h-4 w-4" />
@@ -226,7 +226,7 @@ export function PenjualanPageClient({
             {isAdmin && (
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 className="text-destructive hover:text-destructive"
                 onClick={() => setDeleteTarget(p)}
                 aria-label="Hapus"

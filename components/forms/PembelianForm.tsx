@@ -125,7 +125,7 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
         {/* INFORMASI PEMBELIAN */}
         <Card>
           <CardContent className="p-4 md:p-6 space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="text-sm font-semibold text-muted-foreground">
               Informasi Pembelian
             </p>
 
@@ -213,7 +213,7 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
         {/* NOTA */}
         <Card>
           <CardContent className="p-4 md:p-6 space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="text-sm font-semibold text-muted-foreground">
               Nota / Foto Faktur
             </p>
             <NotaUpload
@@ -353,7 +353,7 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
               <Card key={field.id}>
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    <span className="text-sm font-semibold text-muted-foreground">
                       Item {index + 1}
                     </span>
                     <Button

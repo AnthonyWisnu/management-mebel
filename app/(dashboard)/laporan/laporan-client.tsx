@@ -62,8 +62,9 @@ interface Props {
 
 function EmptyData() {
   return (
-    <div className="flex items-center justify-center py-12 text-muted-foreground text-sm">
-      Tidak ada data untuk filter yang dipilih
+    <div className="flex flex-col items-center justify-center py-14 text-muted-foreground gap-2">
+      <FileSpreadsheet className="h-8 w-8 opacity-30" />
+      <p className="text-sm">Tidak ada data untuk filter yang dipilih</p>
     </div>
   )
 }
@@ -134,21 +135,21 @@ export function LaporanClient({
     return (
       <div className="flex flex-wrap gap-3">
         <div className="space-y-1">
-          <Label className="text-xs">Dari Tanggal</Label>
+          <Label>Dari Tanggal</Label>
           <Input
             type="date"
             value={localDari}
             onChange={(e) => setLocalDari(e.target.value)}
-            className="w-40 text-sm"
+            className="w-full sm:w-40 text-sm"
           />
         </div>
         <div className="space-y-1">
-          <Label className="text-xs">Sampai Tanggal</Label>
+          <Label>Sampai Tanggal</Label>
           <Input
             type="date"
             value={localSampai}
             onChange={(e) => setLocalSampai(e.target.value)}
-            className="w-40 text-sm"
+            className="w-full sm:w-40 text-sm"
           />
         </div>
       </div>
@@ -179,7 +180,7 @@ export function LaporanClient({
             <CardContent className="pt-4 space-y-3">
               <DateFilters />
               <div className="space-y-1">
-                <Label className="text-xs">Pelanggan</Label>
+                <Label>Pelanggan</Label>
                 <Select value={localPelangganId} onValueChange={(v) => setLocalPelangganId(v ?? "")}>
                   <SelectTrigger className="w-52 text-sm">
                     <SelectValue placeholder="Semua pelanggan" />
@@ -199,7 +200,7 @@ export function LaporanClient({
                 onClick={() => applyFilter("penjualan")}
                 disabled={isPending}
               >
-                {isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                {isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
                 Tampilkan
               </Button>
             </CardContent>
@@ -269,7 +270,7 @@ export function LaporanClient({
               <CardContent className="pt-4 space-y-3">
                 <DateFilters />
                 <div className="space-y-1">
-                  <Label className="text-xs">Supplier</Label>
+                  <Label>Supplier</Label>
                   <Select value={localSupplierId} onValueChange={(v) => setLocalSupplierId(v ?? "")}>
                     <SelectTrigger className="w-52 text-sm">
                       <SelectValue placeholder="Semua supplier" />
@@ -285,7 +286,7 @@ export function LaporanClient({
                   </Select>
                 </div>
                 <Button size="sm" onClick={() => applyFilter("pembelian")} disabled={isPending}>
-                  {isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  {isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
                   Tampilkan
                 </Button>
               </CardContent>
@@ -340,7 +341,7 @@ export function LaporanClient({
               <CardContent className="pt-4 space-y-3">
                 <DateFilters />
                 <Button size="sm" onClick={() => applyFilter("profit")} disabled={isPending}>
-                  {isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  {isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
                   Tampilkan
                 </Button>
               </CardContent>
@@ -408,7 +409,7 @@ export function LaporanClient({
             <CardContent className="pt-4 space-y-3">
               <DateFilters />
               <div className="space-y-1">
-                <Label className="text-xs">Karyawan</Label>
+                <Label>Karyawan</Label>
                 <Select value={localKaryawanId} onValueChange={(v) => setLocalKaryawanId(v ?? "")}>
                   <SelectTrigger className="w-52 text-sm">
                     <SelectValue placeholder="Semua karyawan" />
@@ -424,7 +425,7 @@ export function LaporanClient({
                 </Select>
               </div>
               <Button size="sm" onClick={() => applyFilter("absensi")} disabled={isPending}>
-                {isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                {isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
                 Tampilkan
               </Button>
             </CardContent>
@@ -475,7 +476,7 @@ export function LaporanClient({
             <CardContent className="pt-4 space-y-3">
               <DateFilters />
               <div className="space-y-1">
-                <Label className="text-xs">Karyawan</Label>
+                <Label>Karyawan</Label>
                 <Select value={localKaryawanId} onValueChange={(v) => setLocalKaryawanId(v ?? "")}>
                   <SelectTrigger className="w-52 text-sm">
                     <SelectValue placeholder="Semua karyawan" />
@@ -491,7 +492,7 @@ export function LaporanClient({
                 </Select>
               </div>
               <Button size="sm" onClick={() => applyFilter("penggajian")} disabled={isPending}>
-                {isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                {isPending && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
                 Tampilkan
               </Button>
             </CardContent>
@@ -572,42 +573,42 @@ function LaporanPenjualanTable({
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-2 font-medium text-xs">No Faktur</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Tanggal</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Pelanggan</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Produk</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Qty</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Harga Jual</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Subtotal</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">No Faktur</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Tanggal</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Pelanggan</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Produk</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Qty</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Harga Jual</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Subtotal</th>
                 {isAdmin && (
-                  <th className="text-right px-4 py-2 font-medium text-xs">Subtotal HPP</th>
+                  <th className="text-right px-4 py-2 font-semibold text-sm">Subtotal HPP</th>
                 )}
               </tr>
             </thead>
             <tbody className="divide-y">
               {data.map((r, i) => (
                 <tr key={i} className="hover:bg-muted/20">
-                  <td className="px-4 py-2 text-xs">{r.no_faktur ?? "—"}</td>
-                  <td className="px-4 py-2 text-xs">{formatTanggal(r.tanggal)}</td>
-                  <td className="px-4 py-2 text-xs">{r.pelanggan_nama}</td>
-                  <td className="px-4 py-2 text-xs">{r.produk_nama}</td>
-                  <td className="px-4 py-2 text-xs text-right">{r.qty}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.harga_jual_satuan)}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.subtotal_jual)}</td>
+                  <td className="px-4 py-2 text-sm">{r.no_faktur ?? "—"}</td>
+                  <td className="px-4 py-2 text-sm">{formatTanggal(r.tanggal)}</td>
+                  <td className="px-4 py-2 text-sm">{r.pelanggan_nama}</td>
+                  <td className="px-4 py-2 text-sm">{r.produk_nama}</td>
+                  <td className="px-4 py-2 text-sm text-right">{r.qty}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.harga_jual_satuan)}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.subtotal_jual)}</td>
                   {isAdmin && (
-                    <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.subtotal_hpp)}</td>
+                    <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.subtotal_hpp)}</td>
                   )}
                 </tr>
               ))}
             </tbody>
             <tfoot className="bg-muted/40 font-medium">
               <tr>
-                <td colSpan={isAdmin ? 6 : 6} className="px-4 py-2 text-xs text-right">
+                <td colSpan={isAdmin ? 6 : 6} className="px-4 py-2 text-sm text-right">
                   Total
                 </td>
-                <td className="px-4 py-2 text-xs text-right">{formatRupiah(totalJual)}</td>
+                <td className="px-4 py-2 text-sm text-right">{formatRupiah(totalJual)}</td>
                 {isAdmin && (
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(totalHpp)}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(totalHpp)}</td>
                 )}
               </tr>
             </tfoot>
@@ -635,32 +636,32 @@ function LaporanPembelianTable({ data }: { data: LaporanPembelianRow[] }) {
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-2 font-medium text-xs">No Faktur</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Tanggal</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Supplier</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Produk</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Qty</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Harga Beli</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Subtotal</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">No Faktur</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Tanggal</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Supplier</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Produk</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Qty</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Harga Beli</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Subtotal</th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {data.map((r, i) => (
                 <tr key={i} className="hover:bg-muted/20">
-                  <td className="px-4 py-2 text-xs">{r.no_faktur ?? "—"}</td>
-                  <td className="px-4 py-2 text-xs">{formatTanggal(r.tanggal)}</td>
-                  <td className="px-4 py-2 text-xs">{r.supplier_nama}</td>
-                  <td className="px-4 py-2 text-xs">{r.produk_nama}</td>
-                  <td className="px-4 py-2 text-xs text-right">{r.qty}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.harga_beli_satuan)}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.subtotal)}</td>
+                  <td className="px-4 py-2 text-sm">{r.no_faktur ?? "—"}</td>
+                  <td className="px-4 py-2 text-sm">{formatTanggal(r.tanggal)}</td>
+                  <td className="px-4 py-2 text-sm">{r.supplier_nama}</td>
+                  <td className="px-4 py-2 text-sm">{r.produk_nama}</td>
+                  <td className="px-4 py-2 text-sm text-right">{r.qty}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.harga_beli_satuan)}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.subtotal)}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="bg-muted/40 font-medium">
               <tr>
-                <td colSpan={6} className="px-4 py-2 text-xs text-right">Total</td>
-                <td className="px-4 py-2 text-xs text-right">{formatRupiah(total)}</td>
+                <td colSpan={6} className="px-4 py-2 text-sm text-right">Total</td>
+                <td className="px-4 py-2 text-sm text-right">{formatRupiah(total)}</td>
               </tr>
             </tfoot>
           </table>
@@ -687,24 +688,24 @@ function LaporanProfitTable({ data }: { data: LaporanProfitRow[] }) {
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-2 font-medium text-xs">Tanggal</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Total Penjualan</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Total HPP</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Total Pembelian</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Total Penggajian</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Profit Bersih</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Tanggal</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Total Penjualan</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Total HPP</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Total Pembelian</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Total Penggajian</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Profit Bersih</th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {data.map((r, i) => (
                 <tr key={i} className="hover:bg-muted/20">
-                  <td className="px-4 py-2 text-xs">{formatTanggal(r.tanggal)}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.total_penjualan)}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.total_hpp)}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.total_pembelian)}</td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.total_penggajian)}</td>
+                  <td className="px-4 py-2 text-sm">{formatTanggal(r.tanggal)}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.total_penjualan)}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.total_hpp)}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.total_pembelian)}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.total_penggajian)}</td>
                   <td
-                    className={`px-4 py-2 text-xs text-right font-medium ${
+                    className={`px-4 py-2 text-sm text-right font-medium ${
                       r.profit_bersih < 0 ? "text-red-600" : "text-green-600"
                     }`}
                   >
@@ -715,9 +716,9 @@ function LaporanProfitTable({ data }: { data: LaporanProfitRow[] }) {
             </tbody>
             <tfoot className="bg-muted/40 font-medium">
               <tr>
-                <td colSpan={5} className="px-4 py-2 text-xs text-right">Total Profit Bersih</td>
+                <td colSpan={5} className="px-4 py-2 text-sm text-right">Total Profit Bersih</td>
                 <td
-                  className={`px-4 py-2 text-xs text-right ${
+                  className={`px-4 py-2 text-sm text-right ${
                     sumProfit < 0 ? "text-red-600" : "text-green-600"
                   }`}
                 >
@@ -749,30 +750,30 @@ function LaporanAbsensiTable({ data }: { data: LaporanAbsensiRow[] }) {
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-2 font-medium text-xs">Tanggal</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Karyawan</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Tipe Shift</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Nominal</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Catatan</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Tanggal</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Karyawan</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Tipe Shift</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Nominal</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Catatan</th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {data.map((r, i) => (
                 <tr key={i} className="hover:bg-muted/20">
-                  <td className="px-4 py-2 text-xs">{formatTanggal(r.tanggal)}</td>
-                  <td className="px-4 py-2 text-xs">{r.karyawan_nama}</td>
-                  <td className="px-4 py-2 text-xs">
+                  <td className="px-4 py-2 text-sm">{formatTanggal(r.tanggal)}</td>
+                  <td className="px-4 py-2 text-sm">{r.karyawan_nama}</td>
+                  <td className="px-4 py-2 text-sm">
                     {TIPE_SHIFT_LABEL[r.tipe_shift] ?? r.tipe_shift}
                   </td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.nominal)}</td>
-                  <td className="px-4 py-2 text-xs text-muted-foreground">{r.catatan ?? "—"}</td>
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.nominal)}</td>
+                  <td className="px-4 py-2 text-sm text-muted-foreground">{r.catatan ?? "—"}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="bg-muted/40 font-medium">
               <tr>
-                <td colSpan={3} className="px-4 py-2 text-xs text-right">Total</td>
-                <td className="px-4 py-2 text-xs text-right">{formatRupiah(totalNominal)}</td>
+                <td colSpan={3} className="px-4 py-2 text-sm text-right">Total</td>
+                <td className="px-4 py-2 text-sm text-right">{formatRupiah(totalNominal)}</td>
                 <td />
               </tr>
             </tfoot>
@@ -800,25 +801,25 @@ function LaporanPenggajianTable({ data }: { data: LaporanPenggajianRow[] }) {
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-left px-4 py-2 font-medium text-xs">Periode</th>
-                <th className="text-left px-4 py-2 font-medium text-xs">Karyawan</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Total Kalkulasi</th>
-                <th className="text-right px-4 py-2 font-medium text-xs">Total Dibayar</th>
-                <th className="text-center px-4 py-2 font-medium text-xs">Status</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Periode</th>
+                <th className="text-left px-4 py-2 font-semibold text-sm">Karyawan</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Total Kalkulasi</th>
+                <th className="text-right px-4 py-2 font-semibold text-sm">Total Dibayar</th>
+                <th className="text-center px-4 py-2 font-semibold text-sm">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {data.map((r, i) => (
                 <tr key={i} className="hover:bg-muted/20">
-                  <td className="px-4 py-2 text-xs">
+                  <td className="px-4 py-2 text-sm">
                     {formatTanggal(r.periode_mulai)} – {formatTanggal(r.periode_selesai)}
                   </td>
-                  <td className="px-4 py-2 text-xs">{r.karyawan_nama}</td>
-                  <td className="px-4 py-2 text-xs text-right">
+                  <td className="px-4 py-2 text-sm">{r.karyawan_nama}</td>
+                  <td className="px-4 py-2 text-sm text-right">
                     {formatRupiah(r.total_gaji_kalkulasi)}
                   </td>
-                  <td className="px-4 py-2 text-xs text-right">{formatRupiah(r.total_dibayar)}</td>
-                  <td className="px-4 py-2 text-xs text-center">
+                  <td className="px-4 py-2 text-sm text-right">{formatRupiah(r.total_dibayar)}</td>
+                  <td className="px-4 py-2 text-sm text-center">
                     <Badge
                       variant={r.status === "dibayar" ? "default" : "secondary"}
                       className={
@@ -835,8 +836,8 @@ function LaporanPenggajianTable({ data }: { data: LaporanPenggajianRow[] }) {
             </tbody>
             <tfoot className="bg-muted/40 font-medium">
               <tr>
-                <td colSpan={3} className="px-4 py-2 text-xs text-right">Total Dibayar</td>
-                <td className="px-4 py-2 text-xs text-right">{formatRupiah(totalDibayar)}</td>
+                <td colSpan={3} className="px-4 py-2 text-sm text-right">Total Dibayar</td>
+                <td className="px-4 py-2 text-sm text-right">{formatRupiah(totalDibayar)}</td>
                 <td />
               </tr>
             </tfoot>

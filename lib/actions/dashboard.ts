@@ -3,6 +3,30 @@
 import { createClient } from "@/lib/supabase/server"
 import { requireAdmin } from "@/lib/actions/auth"
 
+type PenjualanDash = {
+  id: string
+  no_faktur: string | null
+  tanggal: string
+  total_penjualan: number
+  total_hpp: number
+  pelanggan: { id: string; nama: string } | null
+}
+
+type PembelianDash = {
+  id: string
+  no_faktur: string | null
+  tanggal: string
+  total: number
+  supplier: { id: string; nama: string } | null
+}
+
+type PenggajianDash = { total_dibayar: number }
+
+type PenjualanItemDash = {
+  qty: number
+  produk: { id: string; nama: string } | null
+}
+
 export interface KPIData {
   totalPenjualan: number
   totalPembelian: number
@@ -86,22 +110,19 @@ export async function getDashboardData(
       .lte("periode_mulai", periodeEnd),
   ])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const penjualans: any[] = penjualanResult.data ?? []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pembelians: any[] = pembelianResult.data ?? []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const penggajians: any[] = penggajianResult.data ?? []
+  const penjualans = (penjualanResult.data ?? []) as unknown as PenjualanDash[]
+  const pembelians = (pembelianResult.data ?? []) as unknown as PembelianDash[]
+  const penggajians = (penggajianResult.data ?? []) as unknown as PenggajianDash[]
 
   // Fetch penjualan_item for top produk (only if there are penjualan)
-  let penjualanItems: any[] = [] // eslint-disable-line @typescript-eslint/no-explicit-any
+  let penjualanItems: PenjualanItemDash[] = []
   if (penjualans.length > 0) {
     const ids = penjualans.map((p) => p.id)
     const { data } = await supabase
       .from("penjualan_item")
       .select("qty, produk(id, nama)")
       .in("penjualan_id", ids)
-    penjualanItems = data ?? []
+    penjualanItems = (data ?? []) as unknown as PenjualanItemDash[]
   }
 
   // KPI

@@ -117,7 +117,7 @@ export function PembelianPageClient({
               href={row.original.nota_url}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
               aria-label="Lihat nota"
             >
               <FileImage className="h-4 w-4 text-muted-foreground" />
@@ -125,14 +125,14 @@ export function PembelianPageClient({
           )}
           <Link
             href={`/pembelian/${row.original.id}/edit`}
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
             aria-label="Edit"
           >
             <Pencil className="h-4 w-4" />
           </Link>
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon"
             className="text-destructive hover:text-destructive"
             onClick={() => setDeleteTarget(row.original)}
             aria-label="Hapus"
@@ -170,7 +170,7 @@ export function PembelianPageClient({
                 href={p.nota_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+                className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
                 aria-label="Lihat nota"
               >
                 <FileImage className="h-4 w-4 text-muted-foreground" />
@@ -178,14 +178,14 @@ export function PembelianPageClient({
             )}
             <Link
               href={`/pembelian/${p.id}/edit`}
-              className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
               aria-label="Edit"
             >
               <Pencil className="h-4 w-4" />
             </Link>
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               className="text-destructive hover:text-destructive"
               onClick={() => setDeleteTarget(p)}
               aria-label="Hapus"

@@ -57,7 +57,7 @@ export async function createPembelian(
 
   const no_faktur = input.no_faktur?.trim() || generateNoFaktur("PB")
   const total = input.items.reduce(
-    (sum, item) => sum + Number(item.qty) * Number(item.harga_beli_satuan),
+    (sum, item) => sum + Math.round(Number(item.qty) * Number(item.harga_beli_satuan)),
     0
   )
 
@@ -82,7 +82,7 @@ export async function createPembelian(
     produk_id: item.produk_id,
     qty: Number(item.qty),
     harga_beli_satuan: Number(item.harga_beli_satuan),
-    subtotal: Number(item.qty) * Number(item.harga_beli_satuan),
+    subtotal: Math.round(Number(item.qty) * Number(item.harga_beli_satuan)),
   }))
 
   const { error: errItems } = await supabase.from("pembelian_item").insert(items)
@@ -108,7 +108,7 @@ export async function updatePembelian(
   const supabase = await createClient()
 
   const total = input.items.reduce(
-    (sum, item) => sum + Number(item.qty) * Number(item.harga_beli_satuan),
+    (sum, item) => sum + Math.round(Number(item.qty) * Number(item.harga_beli_satuan)),
     0
   )
 
@@ -137,7 +137,7 @@ export async function updatePembelian(
     produk_id: item.produk_id,
     qty: Number(item.qty),
     harga_beli_satuan: Number(item.harga_beli_satuan),
-    subtotal: Number(item.qty) * Number(item.harga_beli_satuan),
+    subtotal: Math.round(Number(item.qty) * Number(item.harga_beli_satuan)),
   }))
 
   const { error: errItems } = await supabase.from("pembelian_item").insert(items)

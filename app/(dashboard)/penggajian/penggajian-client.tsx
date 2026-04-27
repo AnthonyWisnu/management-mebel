@@ -145,7 +145,7 @@ export function PenggajianPageClient({
         <div className="flex items-center gap-1">
           <Link
             href={`/penggajian/${row.original.id}`}
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
             aria-label="Detail"
           >
             <Eye className="h-4 w-4" />
@@ -153,7 +153,7 @@ export function PenggajianPageClient({
           {isAdmin && row.original.status === "draft" && (
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               className="text-destructive hover:text-destructive"
               onClick={() => setDeleteTarget(row.original)}
               aria-label="Hapus"
@@ -172,7 +172,7 @@ export function PenggajianPageClient({
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <p className="font-semibold leading-tight">{p.karyawan?.nama ?? "-"}</p>
-            <p className="text-muted-foreground text-xs mt-0.5">
+            <p className="text-muted-foreground text-sm mt-0.5">
               {fmtPeriode(p.periode_mulai, p.periode_selesai)}
             </p>
             <div className="flex items-center gap-2 mt-2">
@@ -187,7 +187,7 @@ export function PenggajianPageClient({
           <div className="flex items-center gap-1 shrink-0">
             <Link
               href={`/penggajian/${p.id}`}
-              className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
               aria-label="Detail"
             >
               <Eye className="h-4 w-4" />
@@ -195,7 +195,7 @@ export function PenggajianPageClient({
             {isAdmin && p.status === "draft" && (
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 className="text-destructive hover:text-destructive"
                 onClick={() => setDeleteTarget(p)}
                 aria-label="Hapus"

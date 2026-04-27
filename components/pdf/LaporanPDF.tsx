@@ -1,13 +1,5 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer"
-
-function fmtRupiah(v: number) {
-  return "Rp " + Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-}
-
-function fmtTgl(dateStr: string) {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })
-}
+import { formatRupiah, formatTanggal } from "@/lib/utils"
 
 const s = StyleSheet.create({
   page: { fontFamily: "Helvetica", fontSize: 9, padding: 32, color: "#1a1a1a" },
@@ -101,13 +93,13 @@ export function LaporanPenjualanPDF({ data, isAdmin, periode }: LaporanPenjualan
 
   const rows = data.map((r) => [
     r.no_faktur ?? "—",
-    fmtTgl(r.tanggal),
+    formatTanggal(r.tanggal),
     r.pelanggan_nama,
     r.produk_nama,
     r.qty.toString(),
-    fmtRupiah(r.harga_jual_satuan),
-    fmtRupiah(r.subtotal_jual),
-    ...(isAdmin ? [fmtRupiah(r.subtotal_hpp)] : []),
+    formatRupiah(r.harga_jual_satuan),
+    formatRupiah(r.subtotal_jual),
+    ...(isAdmin ? [formatRupiah(r.subtotal_hpp)] : []),
   ])
 
   const totalJual = data.reduce((s, r) => s + r.subtotal_jual, 0)
@@ -124,11 +116,11 @@ export function LaporanPenjualanPDF({ data, isAdmin, periode }: LaporanPenjualan
         <GenericTable cols={cols} rows={rows} />
         <View style={s.summaryRow}>
           <Text style={s.summaryLabel}>Total Penjualan:</Text>
-          <Text style={s.summaryValue}>{fmtRupiah(totalJual)}</Text>
+          <Text style={s.summaryValue}>{formatRupiah(totalJual)}</Text>
           {isAdmin && (
             <>
               <Text style={[s.summaryLabel, { marginLeft: 16 }]}>Total HPP:</Text>
-              <Text style={s.summaryValue}>{fmtRupiah(totalHpp)}</Text>
+              <Text style={s.summaryValue}>{formatRupiah(totalHpp)}</Text>
             </>
           )}
         </View>
@@ -159,12 +151,12 @@ export function LaporanPembelianPDF({ data, periode }: LaporanPembelianPDFProps)
   ]
   const rows = data.map((r) => [
     r.no_faktur ?? "—",
-    fmtTgl(r.tanggal),
+    formatTanggal(r.tanggal),
     r.supplier_nama,
     r.produk_nama,
     r.qty.toString(),
-    fmtRupiah(r.harga_beli_satuan),
-    fmtRupiah(r.subtotal),
+    formatRupiah(r.harga_beli_satuan),
+    formatRupiah(r.subtotal),
   ])
   const total = data.reduce((s, r) => s + r.subtotal, 0)
 
@@ -179,7 +171,7 @@ export function LaporanPembelianPDF({ data, periode }: LaporanPembelianPDFProps)
         <GenericTable cols={cols} rows={rows} />
         <View style={s.summaryRow}>
           <Text style={s.summaryLabel}>Total:</Text>
-          <Text style={s.summaryValue}>{fmtRupiah(total)}</Text>
+          <Text style={s.summaryValue}>{formatRupiah(total)}</Text>
         </View>
         <Text style={s.footer}>Dicetak pada {new Date().toLocaleDateString("id-ID")}</Text>
       </Page>
@@ -206,12 +198,12 @@ export function LaporanProfitPDF({ data, periode }: LaporanProfitPDFProps) {
     { header: "Profit Bersih", flex: 1.5, align: "right" },
   ]
   const rows = data.map((r) => [
-    fmtTgl(r.tanggal),
-    fmtRupiah(r.total_penjualan),
-    fmtRupiah(r.total_hpp),
-    fmtRupiah(r.total_pembelian),
-    fmtRupiah(r.total_penggajian),
-    fmtRupiah(r.profit_bersih),
+    formatTanggal(r.tanggal),
+    formatRupiah(r.total_penjualan),
+    formatRupiah(r.total_hpp),
+    formatRupiah(r.total_pembelian),
+    formatRupiah(r.total_penggajian),
+    formatRupiah(r.profit_bersih),
   ])
   const totalProfit = data.reduce((s, r) => s + r.profit_bersih, 0)
 
@@ -226,7 +218,7 @@ export function LaporanProfitPDF({ data, periode }: LaporanProfitPDFProps) {
         <GenericTable cols={cols} rows={rows} />
         <View style={s.summaryRow}>
           <Text style={s.summaryLabel}>Total Profit Bersih:</Text>
-          <Text style={s.summaryValue}>{fmtRupiah(totalProfit)}</Text>
+          <Text style={s.summaryValue}>{formatRupiah(totalProfit)}</Text>
         </View>
         <Text style={s.footer}>Dicetak pada {new Date().toLocaleDateString("id-ID")}</Text>
       </Page>
@@ -258,10 +250,10 @@ export function LaporanAbsensiPDF({ data, periode }: LaporanAbsensiPDFProps) {
     { header: "Catatan", flex: 2 },
   ]
   const rows = data.map((r) => [
-    fmtTgl(r.tanggal),
+    formatTanggal(r.tanggal),
     r.karyawan_nama,
     TIPE_SHIFT_LABEL[r.tipe_shift] ?? r.tipe_shift,
-    fmtRupiah(r.nominal),
+    formatRupiah(r.nominal),
     r.catatan ?? "—",
   ])
   const total = data.reduce((s, r) => s + r.nominal, 0)
@@ -277,7 +269,7 @@ export function LaporanAbsensiPDF({ data, periode }: LaporanAbsensiPDFProps) {
         <GenericTable cols={cols} rows={rows} />
         <View style={s.summaryRow}>
           <Text style={s.summaryLabel}>Total Nominal:</Text>
-          <Text style={s.summaryValue}>{fmtRupiah(total)}</Text>
+          <Text style={s.summaryValue}>{formatRupiah(total)}</Text>
         </View>
         <Text style={s.footer}>Dicetak pada {new Date().toLocaleDateString("id-ID")}</Text>
       </Page>
@@ -303,10 +295,10 @@ export function LaporanPenggajianPDF({ data, periode }: LaporanPenggajianPDFProp
     { header: "Status", flex: 1 },
   ]
   const rows = data.map((r) => [
-    `${fmtTgl(r.periode_mulai)} – ${fmtTgl(r.periode_selesai)}`,
+    `${formatTanggal(r.periode_mulai)} – ${formatTanggal(r.periode_selesai)}`,
     r.karyawan_nama,
-    fmtRupiah(r.total_gaji_kalkulasi),
-    fmtRupiah(r.total_dibayar),
+    formatRupiah(r.total_gaji_kalkulasi),
+    formatRupiah(r.total_dibayar),
     r.status === "dibayar" ? "Dibayar" : "Draft",
   ])
   const totalDibayar = data.reduce((s, r) => s + r.total_dibayar, 0)
@@ -322,7 +314,7 @@ export function LaporanPenggajianPDF({ data, periode }: LaporanPenggajianPDFProp
         <GenericTable cols={cols} rows={rows} />
         <View style={s.summaryRow}>
           <Text style={s.summaryLabel}>Total Dibayar:</Text>
-          <Text style={s.summaryValue}>{fmtRupiah(totalDibayar)}</Text>
+          <Text style={s.summaryValue}>{formatRupiah(totalDibayar)}</Text>
         </View>
         <Text style={s.footer}>Dicetak pada {new Date().toLocaleDateString("id-ID")}</Text>
       </Page>
