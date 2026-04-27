@@ -33,6 +33,7 @@ yarn-error.log*
 .claude
 PRD.md
 Plan.md
+PlanPerbaikan.md
 
 # typescript
 *.tsbuildinfo
