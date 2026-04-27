@@ -79,6 +79,7 @@ export interface Pembelian {
   supplier_id: string
   total: number
   catatan: string | null
+  nota_url: string | null
   dibuat_oleh: string | null
   created_at: string
   updated_at: string | null
@@ -107,6 +108,7 @@ export interface Penjualan {
   total_hpp: number
   profit: number
   catatan: string | null
+  nota_url: string | null
   dibuat_oleh: string | null
   created_at: string
   updated_at: string | null

@@ -26,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { NotaUpload } from "@/components/ui/NotaUpload"
 
 interface PembelianFormProps {
   suppliers: Supplier[]
@@ -39,6 +40,9 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
   const router = useRouter()
   const isEdit = !!pembelian
   const [serverError, setServerError] = useState<string | null>(null)
+  const [notaUrl, setNotaUrl] = useState<string | null | undefined>(
+    pembelian?.nota_url ?? undefined
+  )
 
   const supplierOptions = suppliers.map((s) => ({ value: s.id, label: s.nama }))
   const produkOptions = produks.map((p) => ({
@@ -90,8 +94,8 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
   const onSubmit = async (data: PembelianInput) => {
     setServerError(null)
     const result = isEdit
-      ? await updatePembelian(pembelian!.id, data)
-      : await createPembelian(data)
+      ? await updatePembelian(pembelian!.id, data, notaUrl)
+      : await createPembelian(data, notaUrl)
 
     if (result.error) {
       setServerError(result.error)
@@ -202,6 +206,21 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
                   <FormMessage />
                 </FormItem>
               )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* NOTA */}
+        <Card>
+          <CardContent className="p-4 md:p-6 space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Nota / Foto Faktur
+            </p>
+            <NotaUpload
+              folder="pembelian"
+              existingUrl={pembelian?.nota_url}
+              onUploadComplete={(url) => setNotaUrl(url)}
+              disabled={isSubmitting}
             />
           </CardContent>
         </Card>

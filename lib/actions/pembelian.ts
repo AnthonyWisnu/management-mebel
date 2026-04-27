@@ -49,7 +49,8 @@ export async function getPembelianById(id: string): Promise<Pembelian | null> {
 }
 
 export async function createPembelian(
-  input: PembelianInput
+  input: PembelianInput,
+  nota_url?: string | null
 ): Promise<{ error?: string; id?: string }> {
   const profile = await requireAdmin()
   const supabase = await createClient()
@@ -68,6 +69,7 @@ export async function createPembelian(
       no_faktur,
       catatan: input.catatan || null,
       total,
+      nota_url: nota_url ?? null,
       dibuat_oleh: profile.id,
     })
     .select("id")
@@ -99,7 +101,8 @@ export async function createPembelian(
 
 export async function updatePembelian(
   id: string,
-  input: PembelianInput
+  input: PembelianInput,
+  nota_url?: string | null
 ): Promise<{ error?: string }> {
   await requireAdmin()
   const supabase = await createClient()
@@ -109,16 +112,19 @@ export async function updatePembelian(
     0
   )
 
+  const updateData: Record<string, unknown> = {
+    tanggal: input.tanggal,
+    supplier_id: input.supplier_id,
+    no_faktur: input.no_faktur?.trim() || null,
+    catatan: input.catatan || null,
+    total,
+    updated_at: new Date().toISOString(),
+  }
+  if (nota_url !== undefined) updateData.nota_url = nota_url
+
   const { error: errHeader } = await supabase
     .from("pembelian")
-    .update({
-      tanggal: input.tanggal,
-      supplier_id: input.supplier_id,
-      no_faktur: input.no_faktur?.trim() || null,
-      catatan: input.catatan || null,
-      total,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq("id", id)
     .is("deleted_at", null)
 

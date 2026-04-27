@@ -26,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { NotaUpload } from "@/components/ui/NotaUpload"
 
 interface PenjualanFormProps {
   pelangganList: Pelanggan[]
@@ -45,6 +46,9 @@ export function PenjualanForm({
   const router = useRouter()
   const isEdit = !!penjualan
   const [serverError, setServerError] = useState<string | null>(null)
+  const [notaUrl, setNotaUrl] = useState<string | null | undefined>(
+    penjualan?.nota_url ?? undefined
+  )
 
   const pelangganOptions = pelangganList.map((p) => ({ value: p.id, label: p.nama }))
   const produkOptions = produks.map((p) => ({
@@ -112,8 +116,8 @@ export function PenjualanForm({
   const onSubmit = async (data: PenjualanInput) => {
     setServerError(null)
     const result = isEdit
-      ? await updatePenjualan(penjualan!.id, data)
-      : await createPenjualan(data)
+      ? await updatePenjualan(penjualan!.id, data, notaUrl)
+      : await createPenjualan(data, notaUrl)
 
     if (result.error) {
       setServerError(result.error)
@@ -227,6 +231,21 @@ export function PenjualanForm({
                   <FormMessage />
                 </FormItem>
               )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* NOTA */}
+        <Card>
+          <CardContent className="p-4 md:p-6 space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Nota / Foto Faktur
+            </p>
+            <NotaUpload
+              folder="penjualan"
+              existingUrl={penjualan?.nota_url}
+              onUploadComplete={(url) => setNotaUrl(url)}
+              disabled={isSubmitting}
             />
           </CardContent>
         </Card>

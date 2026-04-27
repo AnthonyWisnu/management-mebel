@@ -4,7 +4,7 @@ import { useState, useTransition, useMemo } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { type ColumnDef } from "@tanstack/react-table"
-import { Pencil, Trash2, Plus, Filter, X } from "lucide-react"
+import { Pencil, Trash2, Plus, Filter, X, FileImage } from "lucide-react"
 import { toast } from "sonner"
 import { DataTable } from "@/components/tables/DataTable"
 import { Button } from "@/components/ui/button"
@@ -140,6 +140,17 @@ export function PenjualanPageClient({
       header: "Aksi",
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
+          {row.original.nota_url && (
+            <a
+              href={row.original.nota_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+              aria-label="Lihat nota"
+            >
+              <FileImage className="h-4 w-4 text-muted-foreground" />
+            </a>
+          )}
           <Link
             href={`/penjualan/${row.original.id}/edit`}
             className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
@@ -194,6 +205,17 @@ export function PenjualanPageClient({
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            {p.nota_url && (
+              <a
+                href={p.nota_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+                aria-label="Lihat nota"
+              >
+                <FileImage className="h-4 w-4 text-muted-foreground" />
+              </a>
+            )}
             <Link
               href={`/penjualan/${p.id}/edit`}
               className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}

@@ -49,7 +49,8 @@ export async function getPenjualanById(id: string): Promise<Penjualan | null> {
 }
 
 export async function createPenjualan(
-  input: PenjualanInput
+  input: PenjualanInput,
+  nota_url?: string | null
 ): Promise<{ error?: string; id?: string }> {
   const profile = await requireAuth()
   const supabase = await createClient()
@@ -77,6 +78,7 @@ export async function createPenjualan(
       catatan: input.catatan || null,
       total_penjualan,
       total_hpp,
+      nota_url: nota_url ?? null,
       dibuat_oleh: profile.id,
     })
     .select("id")
@@ -112,7 +114,8 @@ export async function createPenjualan(
 
 export async function updatePenjualan(
   id: string,
-  input: PenjualanInput
+  input: PenjualanInput,
+  nota_url?: string | null
 ): Promise<{ error?: string }> {
   const profile = await requireAuth()
   const supabase = await createClient()
@@ -139,17 +142,20 @@ export async function updatePenjualan(
     total_hpp = existing?.total_hpp ?? 0
   }
 
+  const updateData: Record<string, unknown> = {
+    tanggal: input.tanggal,
+    pelanggan_id: input.pelanggan_id,
+    no_faktur: input.no_faktur?.trim() || null,
+    catatan: input.catatan || null,
+    total_penjualan,
+    total_hpp,
+    updated_at: new Date().toISOString(),
+  }
+  if (nota_url !== undefined) updateData.nota_url = nota_url
+
   const { error: errHeader } = await supabase
     .from("penjualan")
-    .update({
-      tanggal: input.tanggal,
-      pelanggan_id: input.pelanggan_id,
-      no_faktur: input.no_faktur?.trim() || null,
-      catatan: input.catatan || null,
-      total_penjualan,
-      total_hpp,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq("id", id)
     .is("deleted_at", null)
 
