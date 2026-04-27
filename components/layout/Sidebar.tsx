@@ -94,7 +94,7 @@ function BrandLogo() {
   return (
     <div className="h-16 flex items-center px-6 border-b shrink-0">
       <span className="font-semibold text-base tracking-tight">
-        Mebel Manager
+        ADIFA Furniture
       </span>
     </div>
   )

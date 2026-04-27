@@ -117,7 +117,7 @@ export function LaporanPenjualanPDF({ data, isAdmin, periode }: LaporanPenjualan
     <Document>
       <Page size="A4" orientation="landscape" style={s.page}>
         <View style={s.header}>
-          <Text style={s.company}>Mebel Manager</Text>
+          <Text style={s.company}>ADIFA Furniture</Text>
           <Text style={s.title}>Laporan Penjualan</Text>
           <Text style={s.meta}>Periode: {periode}</Text>
         </View>
@@ -172,7 +172,7 @@ export function LaporanPembelianPDF({ data, periode }: LaporanPembelianPDFProps)
     <Document>
       <Page size="A4" orientation="landscape" style={s.page}>
         <View style={s.header}>
-          <Text style={s.company}>Mebel Manager</Text>
+          <Text style={s.company}>ADIFA Furniture</Text>
           <Text style={s.title}>Laporan Pembelian</Text>
           <Text style={s.meta}>Periode: {periode}</Text>
         </View>
@@ -219,7 +219,7 @@ export function LaporanProfitPDF({ data, periode }: LaporanProfitPDFProps) {
     <Document>
       <Page size="A4" orientation="landscape" style={s.page}>
         <View style={s.header}>
-          <Text style={s.company}>Mebel Manager</Text>
+          <Text style={s.company}>ADIFA Furniture</Text>
           <Text style={s.title}>Laporan Profit</Text>
           <Text style={s.meta}>Periode: {periode}</Text>
         </View>
@@ -270,7 +270,7 @@ export function LaporanAbsensiPDF({ data, periode }: LaporanAbsensiPDFProps) {
     <Document>
       <Page size="A4" style={s.page}>
         <View style={s.header}>
-          <Text style={s.company}>Mebel Manager</Text>
+          <Text style={s.company}>ADIFA Furniture</Text>
           <Text style={s.title}>Laporan Absensi</Text>
           <Text style={s.meta}>Periode: {periode}</Text>
         </View>
@@ -315,7 +315,7 @@ export function LaporanPenggajianPDF({ data, periode }: LaporanPenggajianPDFProp
     <Document>
       <Page size="A4" style={s.page}>
         <View style={s.header}>
-          <Text style={s.company}>Mebel Manager</Text>
+          <Text style={s.company}>ADIFA Furniture</Text>
           <Text style={s.title}>Laporan Penggajian</Text>
           <Text style={s.meta}>Periode: {periode}</Text>
         </View>

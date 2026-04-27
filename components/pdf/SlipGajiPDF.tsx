@@ -71,7 +71,7 @@ export function SlipGajiPDF({ penggajian }: SlipGajiPDFProps) {
       <Page size="A4" style={s.page}>
         {/* Header */}
         <View style={s.header}>
-          <Text style={s.company}>Toko Mebel</Text>
+          <Text style={s.company}>ADIFA Furniture</Text>
           <Text style={s.subtitle}>Slip Gaji Karyawan</Text>
           <Text style={s.title}>
             Periode: {fmtPeriode(penggajian.periode_mulai, penggajian.periode_selesai)}

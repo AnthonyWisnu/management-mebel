@@ -47,7 +47,7 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Masuk</CardTitle>
-        <CardDescription>Sistem Manajemen Mebel</CardDescription>
+        <CardDescription>ADIFA Furniture</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

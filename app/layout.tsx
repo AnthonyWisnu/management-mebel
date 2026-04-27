@@ -10,10 +10,10 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "Sistem Manajemen Mebel",
-    template: "%s | Sistem Manajemen Mebel",
+    default: "ADIFA Furniture",
+    template: "%s | ADIFA Furniture",
   },
-  description: "Aplikasi manajemen operasional usaha mebel",
+  description: "Sistem manajemen operasional ADIFA Furniture",
 }
 
 export default function RootLayout({
