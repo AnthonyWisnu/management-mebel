@@ -3,7 +3,7 @@
 import { useFieldArray, useForm, useWatch, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Plus, Trash2, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -55,6 +55,7 @@ export function PenjualanForm({
     value: p.id,
     label: p.nama + (p.satuan ? ` (${p.satuan})` : ""),
   }))
+  const produkMap = useMemo(() => new Map(produks.map((p) => [p.id, p])), [produks])
 
   const form = useForm<PenjualanInput>({
     resolver: zodResolver(penjualanSchema) as unknown as Resolver<PenjualanInput>,
@@ -291,22 +292,30 @@ export function PenjualanForm({
                       <FormField
                         control={form.control}
                         name={`items.${index}.produk_id`}
-                        render={({ field: f }) => (
-                          <FormItem className="space-y-0">
-                            <FormControl>
-                              <SearchableSelect
-                                options={produkOptions}
-                                value={f.value}
-                                onChange={f.onChange}
-                                placeholder="Pilih produk..."
-                                searchPlaceholder="Cari produk..."
-                                emptyText="Produk tidak ditemukan"
-                                disabled={isSubmitting}
-                              />
-                            </FormControl>
-                            <FormMessage className="mt-1" />
-                          </FormItem>
-                        )}
+                        render={({ field: f }) => {
+                          const selectedProduk = produkMap.get(f.value)
+                          return (
+                            <FormItem className="space-y-0">
+                              <FormControl>
+                                <SearchableSelect
+                                  options={produkOptions}
+                                  value={f.value}
+                                  onChange={f.onChange}
+                                  placeholder="Pilih produk..."
+                                  searchPlaceholder="Cari produk..."
+                                  emptyText="Produk tidak ditemukan"
+                                  disabled={isSubmitting}
+                                />
+                              </FormControl>
+                              {selectedProduk && (
+                                <p className={`text-xs mt-1 ${selectedProduk.stok <= 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                                  Stok: {selectedProduk.stok} {selectedProduk.satuan}
+                                </p>
+                              )}
+                              <FormMessage className="mt-1" />
+                            </FormItem>
+                          )
+                        }}
                       />
                     </td>
                     <td className="px-3 py-2">
@@ -461,25 +470,33 @@ export function PenjualanForm({
                   <FormField
                     control={form.control}
                     name={`items.${index}.produk_id`}
-                    render={({ field: f }) => (
-                      <FormItem>
-                        <FormLabel>
-                          Produk <span className="text-destructive">*</span>
-                        </FormLabel>
-                        <FormControl>
-                          <SearchableSelect
-                            options={produkOptions}
-                            value={f.value}
-                            onChange={f.onChange}
-                            placeholder="Pilih produk..."
-                            searchPlaceholder="Cari produk..."
-                            emptyText="Produk tidak ditemukan"
-                            disabled={isSubmitting}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    render={({ field: f }) => {
+                      const selectedProduk = produkMap.get(f.value)
+                      return (
+                        <FormItem>
+                          <FormLabel>
+                            Produk <span className="text-destructive">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <SearchableSelect
+                              options={produkOptions}
+                              value={f.value}
+                              onChange={f.onChange}
+                              placeholder="Pilih produk..."
+                              searchPlaceholder="Cari produk..."
+                              emptyText="Produk tidak ditemukan"
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          {selectedProduk && (
+                            <p className={`text-xs ${selectedProduk.stok <= 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                              Stok: {selectedProduk.stok} {selectedProduk.satuan}
+                            </p>
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )
+                    }}
                   />
 
                   <div className="grid grid-cols-2 gap-3">

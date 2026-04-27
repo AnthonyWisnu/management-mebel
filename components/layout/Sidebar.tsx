@@ -15,6 +15,7 @@ import {
   Wallet,
   FileBarChart,
   UserCog,
+  History,
 } from "lucide-react"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
@@ -84,6 +85,12 @@ const NAV_SECTIONS: NavSection[] = [
         href: "/users",
         label: "Manajemen User",
         icon: UserCog,
+        adminOnly: true,
+      },
+      {
+        href: "/audit-log",
+        label: "Riwayat Aktivitas",
+        icon: History,
         adminOnly: true,
       },
     ],

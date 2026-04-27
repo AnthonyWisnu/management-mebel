@@ -48,6 +48,33 @@ export async function getPenjualanById(id: string): Promise<Penjualan | null> {
   return data as Penjualan
 }
 
+async function validateStok(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  items: PenjualanInput["items"],
+  releaseQtyMap?: Map<string, number>
+): Promise<{ error?: string }> {
+  const produkIds = [...new Set(items.map((i) => i.produk_id))]
+  const { data: produkList } = await supabase
+    .from("produk")
+    .select("id, nama, stok, satuan")
+    .in("id", produkIds)
+
+  const produkMap = new Map((produkList ?? []).map((p) => [p.id, p]))
+
+  for (const item of items) {
+    const produk = produkMap.get(item.produk_id)
+    if (!produk) return { error: "Produk tidak ditemukan" }
+    const released = releaseQtyMap?.get(item.produk_id) ?? 0
+    const effectiveStok = Number(produk.stok) + released
+    if (effectiveStok < Number(item.qty)) {
+      return {
+        error: `Stok ${produk.nama} tidak cukup (tersedia: ${effectiveStok} ${produk.satuan}, dibutuhkan: ${item.qty})`,
+      }
+    }
+  }
+  return {}
+}
+
 export async function createPenjualan(
   input: PenjualanInput,
   nota_url?: string | null
@@ -55,6 +82,9 @@ export async function createPenjualan(
   const profile = await requireAuth()
   const supabase = await createClient()
   const isAdmin = profile.role === "admin"
+
+  const stokError = await validateStok(supabase, input.items)
+  if (stokError.error) return stokError
 
   const no_faktur = input.no_faktur?.trim() || generateNoFaktur("PJ")
 
@@ -120,6 +150,20 @@ export async function updatePenjualan(
   const profile = await requireAuth()
   const supabase = await createClient()
   const isAdmin = profile.role === "admin"
+
+  // Validasi stok dengan memperhitungkan item lama yang akan dibebaskan
+  const { data: oldItems } = await supabase
+    .from("penjualan_item")
+    .select("produk_id, qty")
+    .eq("penjualan_id", id)
+
+  const releaseQtyMap = new Map<string, number>()
+  for (const item of oldItems ?? []) {
+    releaseQtyMap.set(item.produk_id, (releaseQtyMap.get(item.produk_id) ?? 0) + Number(item.qty))
+  }
+
+  const stokError = await validateStok(supabase, input.items, releaseQtyMap)
+  if (stokError.error) return stokError
 
   const total_penjualan = input.items.reduce(
     (sum, item) => sum + Number(item.qty) * Number(item.harga_jual_satuan),

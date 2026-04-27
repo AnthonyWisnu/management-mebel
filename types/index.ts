@@ -65,6 +65,7 @@ export interface Produk {
   nama: string
   deskripsi: string | null
   satuan: string
+  stok: number
   foto_url: string | null
   created_at: string
   updated_at: string | null

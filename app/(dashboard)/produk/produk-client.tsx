@@ -106,6 +106,18 @@ export function ProdukPageClient({ initialData, kategoriList, role }: ProdukPage
       cell: ({ row }) => row.original.satuan,
     },
     {
+      accessorKey: "stok",
+      header: "Stok",
+      cell: ({ row }) => {
+        const { stok, satuan } = row.original
+        return (
+          <span className={stok <= 0 ? "text-destructive font-medium" : ""}>
+            {stok} {satuan}
+          </span>
+        )
+      },
+    },
+    {
       id: "aksi",
       header: "Aksi",
       cell: ({ row }) => (
@@ -163,6 +175,9 @@ export function ProdukPageClient({ initialData, kategoriList, role }: ProdukPage
                     {p.kategori_produk?.nama ?? "-"}
                   </Badge>
                   <span className="text-xs text-muted-foreground">{p.satuan}</span>
+                  <span className={`text-xs font-medium ${p.stok <= 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                    Stok: {p.stok}
+                  </span>
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0">
