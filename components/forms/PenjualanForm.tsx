@@ -65,6 +65,7 @@ export function PenjualanForm({
           pelanggan_id: penjualan.pelanggan_id,
           no_faktur: penjualan.no_faktur ?? "",
           catatan: penjualan.catatan ?? "",
+          total_dibayar: penjualan.total_dibayar,
           items: penjualan.penjualan_item?.map((item) => ({
             produk_id: item.produk_id,
             qty: item.qty,
@@ -77,6 +78,7 @@ export function PenjualanForm({
           pelanggan_id: "",
           no_faktur: "",
           catatan: "",
+          total_dibayar: 0,
           items: [DEFAULT_ITEM],
         },
   })
@@ -87,6 +89,7 @@ export function PenjualanForm({
   })
 
   const watchedItems = useWatch({ control: form.control, name: "items" })
+  const watchedDibayar = useWatch({ control: form.control, name: "total_dibayar" })
 
   const getSubtotalJual = (index: number) => {
     const item = watchedItems?.[index]
@@ -445,6 +448,65 @@ export function PenjualanForm({
             </table>
           </div>
 
+          {/* Summary Pembayaran — desktop */}
+          <div className="hidden md:block rounded-lg border bg-muted/30 p-4 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Total Transaksi</span>
+              <span className="font-medium tabular-nums">{formatRupiah(totalPenjualan)}</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <label className="text-muted-foreground">Jumlah Dibayar</label>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={() => form.setValue("total_dibayar", totalPenjualan)}
+                  disabled={isSubmitting}
+                >
+                  Lunas
+                </Button>
+                <FormField
+                  control={form.control}
+                  name="total_dibayar"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={0}
+                          className="w-44 text-right h-8"
+                          disabled={isSubmitting}
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            {(() => {
+              const sisa = totalPenjualan - (Number(watchedDibayar) ?? totalPenjualan)
+              if (sisa === 0) return (
+                <div className="flex justify-between text-sm text-green-600 font-medium">
+                  <span>Status</span><span>Lunas</span>
+                </div>
+              )
+              if (sisa > 0) return (
+                <div className="flex justify-between text-sm text-destructive font-medium">
+                  <span>Sisa Piutang</span><span className="tabular-nums">{formatRupiah(sisa)}</span>
+                </div>
+              )
+              return (
+                <div className="flex justify-between text-sm text-blue-600 font-medium">
+                  <span>Kembalian / Kredit</span><span className="tabular-nums">{formatRupiah(Math.abs(sisa))}</span>
+                </div>
+              )
+            })()}
+          </div>
           {/* Mobile: kartu vertikal */}
           <div className="md:hidden space-y-3">
             {fields.map((field, index) => (
@@ -586,6 +648,66 @@ export function PenjualanForm({
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Summary Pembayaran — mobile */}
+          <div className="md:hidden rounded-lg border bg-muted/30 p-4 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Total Transaksi</span>
+              <span className="font-medium tabular-nums">{formatRupiah(totalPenjualan)}</span>
+            </div>
+            <div className="flex justify-between items-center text-sm gap-2">
+              <label className="text-muted-foreground shrink-0">Jumlah Dibayar</label>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs shrink-0"
+                  onClick={() => form.setValue("total_dibayar", totalPenjualan)}
+                  disabled={isSubmitting}
+                >
+                  Lunas
+                </Button>
+                <FormField
+                  control={form.control}
+                  name="total_dibayar"
+                  render={({ field }) => (
+                    <FormItem className="space-y-0">
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={0}
+                          className="w-32 text-right h-8"
+                          disabled={isSubmitting}
+                          {...field}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            {(() => {
+              const sisa = totalPenjualan - (Number(watchedDibayar) ?? totalPenjualan)
+              if (sisa === 0) return (
+                <div className="flex justify-between text-sm text-green-600 font-medium">
+                  <span>Status</span><span>Lunas</span>
+                </div>
+              )
+              if (sisa > 0) return (
+                <div className="flex justify-between text-sm text-destructive font-medium">
+                  <span>Sisa Piutang</span><span className="tabular-nums">{formatRupiah(sisa)}</span>
+                </div>
+              )
+              return (
+                <div className="flex justify-between text-sm text-blue-600 font-medium">
+                  <span>Kembalian / Kredit</span><span className="tabular-nums">{formatRupiah(Math.abs(sisa))}</span>
+                </div>
+              )
+            })()}
           </div>
 
           <Button

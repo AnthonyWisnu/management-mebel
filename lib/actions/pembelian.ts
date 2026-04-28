@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/actions/auth"
 import { generateNoFaktur } from "@/lib/utils"
 import type { PembelianInput } from "@/lib/validations/pembelian"
 import type { Pembelian, Supplier } from "@/types"
+import { syncHPCreate, syncHPUpdate, reverseHP } from "@/lib/actions/hutang-piutang-helper"
 
 export interface PembelianFilters {
   tanggal_dari?: string
@@ -61,6 +62,8 @@ export async function createPembelian(
     0
   )
 
+  const totalDibayar = Number(input.total_dibayar ?? total)
+
   const { data: pembelian, error: errHeader } = await supabase
     .from("pembelian")
     .insert({
@@ -71,6 +74,7 @@ export async function createPembelian(
       total,
       nota_url: nota_url ?? null,
       dibuat_oleh: profile.id,
+      total_dibayar: totalDibayar,
     })
     .select("id")
     .single()
@@ -95,6 +99,23 @@ export async function createPembelian(
     return { error: errItems.message }
   }
 
+  const { status_bayar } = await syncHPCreate(supabase, {
+    transaksiId: pembelian.id,
+    sumber: "pembelian",
+    pihakTipe: "supplier",
+    pihakId: input.supplier_id,
+    total,
+    totalDibayar,
+    tanggal: input.tanggal,
+    dibuatOleh: profile.id,
+    noFaktur: no_faktur,
+  })
+
+  await supabase
+    .from("pembelian")
+    .update({ status_bayar })
+    .eq("id", pembelian.id)
+
   revalidatePath("/pembelian")
   return { id: pembelian.id }
 }
@@ -104,20 +125,30 @@ export async function updatePembelian(
   input: PembelianInput,
   nota_url?: string | null
 ): Promise<{ error?: string }> {
-  await requireAdmin()
+  const profile = await requireAdmin()
   const supabase = await createClient()
+
+  const { data: lama } = await supabase
+    .from("pembelian")
+    .select("total, total_dibayar, supplier_id, no_faktur")
+    .eq("id", id)
+    .single()
 
   const total = input.items.reduce(
     (sum, item) => sum + Math.round(Number(item.qty) * Number(item.harga_beli_satuan)),
     0
   )
 
+  const totalDibayar = Number(input.total_dibayar ?? total)
+  const no_faktur = input.no_faktur?.trim() || null
+
   const updateData: Record<string, unknown> = {
     tanggal: input.tanggal,
     supplier_id: input.supplier_id,
-    no_faktur: input.no_faktur?.trim() || null,
+    no_faktur,
     catatan: input.catatan || null,
     total,
+    total_dibayar: totalDibayar,
     updated_at: new Date().toISOString(),
   }
   if (nota_url !== undefined) updateData.nota_url = nota_url
@@ -143,13 +174,38 @@ export async function updatePembelian(
   const { error: errItems } = await supabase.from("pembelian_item").insert(items)
   if (errItems) return { error: errItems.message }
 
+  const { status_bayar } = await syncHPUpdate(supabase, {
+    transaksiId: id,
+    sumber: "pembelian",
+    pihakTipe: "supplier",
+    pihakId: input.supplier_id,
+    total,
+    totalDibayar,
+    totalLama: Number(lama?.total ?? total),
+    totalDibayarLama: Number(lama?.total_dibayar ?? total),
+    tanggal: input.tanggal,
+    dibuatOleh: profile.id,
+    noFaktur: no_faktur,
+  })
+
+  await supabase
+    .from("pembelian")
+    .update({ status_bayar })
+    .eq("id", id)
+
   revalidatePath("/pembelian")
   return {}
 }
 
 export async function deletePembelian(id: string): Promise<{ error?: string }> {
-  await requireAdmin()
+  const profile = await requireAdmin()
   const supabase = await createClient()
+
+  const { data: lama } = await supabase
+    .from("pembelian")
+    .select("total, total_dibayar, supplier_id, no_faktur")
+    .eq("id", id)
+    .single()
 
   const { error } = await supabase
     .from("pembelian")
@@ -157,6 +213,20 @@ export async function deletePembelian(id: string): Promise<{ error?: string }> {
     .eq("id", id)
 
   if (error) return { error: error.message }
+
+  if (lama) {
+    await reverseHP(supabase, {
+      transaksiId: id,
+      sumber: "pembelian",
+      pihakTipe: "supplier",
+      pihakId: lama.supplier_id,
+      totalLama: Number(lama.total),
+      totalDibayarLama: Number(lama.total_dibayar),
+      dibuatOleh: profile.id,
+      noFaktur: lama.no_faktur,
+    })
+  }
+
   revalidatePath("/pembelian")
   return {}
 }

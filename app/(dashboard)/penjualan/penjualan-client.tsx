@@ -25,7 +25,19 @@ import { SearchableSelect } from "@/components/ui/searchable-select"
 import { deletePenjualan } from "@/lib/actions/penjualan"
 import { cn, formatRupiah, formatTanggal } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import type { Penjualan, Pelanggan } from "@/types"
+import type { Penjualan, Pelanggan, StatusBayar } from "@/types"
+
+const STATUS_BAYAR_VARIANT: Record<StatusBayar, "default" | "secondary" | "destructive"> = {
+  lunas:       "default",
+  sebagian:    "secondary",
+  belum_lunas: "destructive",
+}
+
+const STATUS_BAYAR_LABEL: Record<StatusBayar, string> = {
+  lunas:       "Lunas",
+  sebagian:    "Sebagian",
+  belum_lunas: "Belum Bayar",
+}
 
 interface PenjualanPageClientProps {
   initialData: Penjualan[]
@@ -107,6 +119,14 @@ export function PenjualanPageClient({
           {formatRupiah(row.original.total_penjualan)}
         </span>
       ),
+    },
+    {
+      accessorKey: "status_bayar",
+      header: "Status",
+      cell: ({ row }) => {
+        const s = (row.original.status_bayar ?? "lunas") as StatusBayar
+        return <Badge variant={STATUS_BAYAR_VARIANT[s]}>{STATUS_BAYAR_LABEL[s]}</Badge>
+      },
     },
     ...(isAdmin
       ? ([
@@ -192,6 +212,9 @@ export function PenjualanPageClient({
               <span className="font-semibold tabular-nums text-sm">
                 {formatRupiah(p.total_penjualan)}
               </span>
+              <Badge variant={STATUS_BAYAR_VARIANT[(p.status_bayar ?? "lunas") as StatusBayar]} className="text-xs">
+                {STATUS_BAYAR_LABEL[(p.status_bayar ?? "lunas") as StatusBayar]}
+              </Badge>
               {isAdmin && (
                 <span
                   className={cn(

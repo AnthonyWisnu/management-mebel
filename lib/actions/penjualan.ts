@@ -6,6 +6,7 @@ import { requireAdmin, requireAuth } from "@/lib/actions/auth"
 import { generateNoFaktur } from "@/lib/utils"
 import type { PenjualanInput } from "@/lib/validations/penjualan"
 import type { Penjualan, Pelanggan } from "@/types"
+import { syncHPCreate, syncHPUpdate, reverseHP } from "@/lib/actions/hutang-piutang-helper"
 
 export interface PenjualanFilters {
   tanggal_dari?: string
@@ -99,6 +100,8 @@ export async function createPenjualan(
       )
     : 0
 
+  const totalDibayar = Number(input.total_dibayar ?? total_penjualan)
+
   const { data: penjualan, error: errHeader } = await supabase
     .from("penjualan")
     .insert({
@@ -110,6 +113,7 @@ export async function createPenjualan(
       total_hpp,
       nota_url: nota_url ?? null,
       dibuat_oleh: profile.id,
+      total_dibayar: totalDibayar,
     })
     .select("id")
     .single()
@@ -138,6 +142,23 @@ export async function createPenjualan(
     return { error: errItems.message }
   }
 
+  const { status_bayar } = await syncHPCreate(supabase, {
+    transaksiId: penjualan.id,
+    sumber: "penjualan",
+    pihakTipe: "pelanggan",
+    pihakId: input.pelanggan_id,
+    total: total_penjualan,
+    totalDibayar: totalDibayar,
+    tanggal: input.tanggal,
+    dibuatOleh: profile.id,
+    noFaktur: no_faktur,
+  })
+
+  await supabase
+    .from("penjualan")
+    .update({ status_bayar })
+    .eq("id", penjualan.id)
+
   revalidatePath("/penjualan")
   return { id: penjualan.id }
 }
@@ -150,6 +171,12 @@ export async function updatePenjualan(
   const profile = await requireAuth()
   const supabase = await createClient()
   const isAdmin = profile.role === "admin"
+
+  const { data: lama } = await supabase
+    .from("penjualan")
+    .select("total_penjualan, total_dibayar, pelanggan_id, no_faktur")
+    .eq("id", id)
+    .single()
 
   // Validasi stok dengan memperhitungkan item lama yang akan dibebaskan
   const { data: oldItems } = await supabase
@@ -186,13 +213,17 @@ export async function updatePenjualan(
     total_hpp = existing?.total_hpp ?? 0
   }
 
+  const totalDibayar = Number(input.total_dibayar ?? total_penjualan)
+  const no_faktur = input.no_faktur?.trim() || null
+
   const updateData: Record<string, unknown> = {
     tanggal: input.tanggal,
     pelanggan_id: input.pelanggan_id,
-    no_faktur: input.no_faktur?.trim() || null,
+    no_faktur,
     catatan: input.catatan || null,
     total_penjualan,
     total_hpp,
+    total_dibayar: totalDibayar,
     updated_at: new Date().toISOString(),
   }
   if (nota_url !== undefined) updateData.nota_url = nota_url
@@ -223,13 +254,38 @@ export async function updatePenjualan(
   const { error: errItems } = await supabase.from("penjualan_item").insert(items)
   if (errItems) return { error: errItems.message }
 
+  const { status_bayar } = await syncHPUpdate(supabase, {
+    transaksiId: id,
+    sumber: "penjualan",
+    pihakTipe: "pelanggan",
+    pihakId: input.pelanggan_id,
+    total: total_penjualan,
+    totalDibayar: totalDibayar,
+    totalLama: Number(lama?.total_penjualan ?? total_penjualan),
+    totalDibayarLama: Number(lama?.total_dibayar ?? total_penjualan),
+    tanggal: input.tanggal,
+    dibuatOleh: profile.id,
+    noFaktur: no_faktur,
+  })
+
+  await supabase
+    .from("penjualan")
+    .update({ status_bayar })
+    .eq("id", id)
+
   revalidatePath("/penjualan")
   return {}
 }
 
 export async function deletePenjualan(id: string): Promise<{ error?: string }> {
-  await requireAdmin()
+  const profile = await requireAdmin()
   const supabase = await createClient()
+
+  const { data: lama } = await supabase
+    .from("penjualan")
+    .select("total_penjualan, total_dibayar, pelanggan_id, no_faktur")
+    .eq("id", id)
+    .single()
 
   const { error } = await supabase
     .from("penjualan")
@@ -237,6 +293,20 @@ export async function deletePenjualan(id: string): Promise<{ error?: string }> {
     .eq("id", id)
 
   if (error) return { error: error.message }
+
+  if (lama) {
+    await reverseHP(supabase, {
+      transaksiId: id,
+      sumber: "penjualan",
+      pihakTipe: "pelanggan",
+      pihakId: lama.pelanggan_id,
+      totalLama: Number(lama.total_penjualan),
+      totalDibayarLama: Number(lama.total_dibayar),
+      dibuatOleh: profile.id,
+      noFaktur: lama.no_faktur,
+    })
+  }
+
   revalidatePath("/penjualan")
   return {}
 }

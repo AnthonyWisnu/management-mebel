@@ -16,6 +16,7 @@ import {
   FileBarChart,
   UserCog,
   History,
+  CreditCard,
 } from "lucide-react"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
@@ -65,6 +66,12 @@ const NAV_SECTIONS: NavSection[] = [
         adminOnly: true,
       },
       { href: "/penjualan", label: "Penjualan", icon: ShoppingBag },
+      {
+        href: "/hutang-piutang",
+        label: "Hutang & Piutang",
+        icon: CreditCard,
+        adminOnly: true,
+      },
     ],
   },
   {

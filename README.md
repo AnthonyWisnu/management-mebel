@@ -1,247 +1,234 @@
-# Sistem Manajemen Mebel
+# Sistem Manajemen Toko Mebel
 
-Aplikasi web manajemen operasional usaha mebel mencakup transaksi pembelian & penjualan, absensi, penggajian, dan dashboard keuangan.
-
-![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e?logo=supabase)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)
-
----
-
-## Tentang Project
-
-**Sistem Manajemen Mebel** adalah aplikasi web full-stack untuk mengelola operasional usaha mebel skala kecil hingga menengah. Dibangun dengan arsitektur modern menggunakan **Next.js App Router** dan **Supabase** sebagai backend, aplikasi ini mendukung dua peran pengguna (admin dan pegawai) dengan hak akses berbeda di setiap fitur.
-
----
+Aplikasi manajemen operasional toko mebel berbasis web yang mencakup master data, transaksi pembelian dan penjualan, manajemen SDM, laporan keuangan, serta pencatatan hutang dan piutang.
 
 ## Fitur Utama
 
-### Dashboard Keuangan
-- KPI ringkasan: Uang Masuk, Uang Keluar, HPP, dan Profit Bersih
-- Grafik tren penjualan vs pembelian (line chart)
-- Top 5 produk terlaris (bar chart)
-- Distribusi pembelian per supplier (pie chart)
-- Filter periode: Hari Ini, 7 Hari, Bulan Ini, Bulan Lalu, Tahun Ini, Custom Range
+### Master Data
+- Manajemen supplier (dengan saldo kredit)
+- Manajemen pelanggan (dengan saldo kredit)
+- Kategori produk
+- Produk dengan stok otomatis
+- Data karyawan
 
 ### Transaksi
-- **Pembelian** Pencatatan pembelian ke supplier dengan multi-item detail
-- **Penjualan** Pencatatan penjualan ke pelanggan dengan HPP per item
-- Perhitungan subtotal dan total otomatis, upload bukti nota/struk
+- Pembelian dari supplier (multi-item, status pembayaran)
+- Penjualan kepada pelanggan (multi-item, status pembayaran)
+- Pelacakan stok otomatis pada setiap transaksi
 
-### Master Data
-- Manajemen Supplier, Pelanggan, Karyawan, Produk, dan Kategori Produk
-- CRUD lengkap dengan pencarian, filter, dan sortable columns
-- Soft delete untuk menjaga integritas referensi historis
-- Pelacakan stok otomatis melalui database trigger
+### Hutang dan Piutang
+- Hutang pembelian ke supplier
+- Piutang penjualan dari pelanggan
+- Pencatatan pembayaran bertahap (cicilan)
+- Saldo kredit otomatis untuk kelebihan bayar
+- Status pembayaran: Lunas, Sebagian, Belum Bayar
 
-### Absensi & Penggajian
-- Pencatatan absensi harian: shift setengah hari, satu hari, dan lembur
-- Nominal gaji otomatis dari master karyawan (dapat di-override)
-- Generate slip penggajian mingguan otomatis dari rekap absensi
-- Cetak slip gaji dalam format PDF
+### SDM dan Penggajian
+- Absensi harian karyawan
+- Penggajian mingguan berdasarkan tarif harian dan lembur
 
-### Laporan & Export
-- Laporan Penjualan, Pembelian, Profit, Absensi, dan Penggajian
-- Export ke **PDF** dan **Excel**
-- Filter berdasarkan rentang tanggal, pelanggan, supplier, karyawan
+### Dashboard dan Laporan
+- KPI ringkasan (pendapatan, pembelian, profit, transaksi)
+- Grafik tren penjualan, produk terlaris, distribusi supplier
+- 5 jenis laporan dengan ekspor ke Excel dan PDF:
+  - Laporan Penjualan
+  - Laporan Pembelian
+  - Laporan Profit
+  - Laporan Absensi
+  - Laporan Penggajian
 
 ### Keamanan
-- Route protection via server-side authentication (Next.js Proxy)
-- Row Level Security (RLS) di semua tabel Supabase
-- Validasi file upload menggunakan magic bytes (bukan hanya ekstensi)
-- Audit log otomatis untuk perubahan data transaksi dan penggajian
+- Autentikasi berbasis Supabase Auth
+- Row Level Security (RLS) di semua tabel
+- Peran pengguna: admin (akses penuh) dan pegawai (akses terbatas)
+- Audit log untuk semua perubahan data sensitif
+- Soft delete pada semua tabel utama
 
 ---
 
-## Hak Akses
+## Teknologi
 
-| Fitur                | Admin | Pegawai      |
-|----------------------|-------|--------------|
-| Dashboard Keuangan   | Ya    | Tidak        |
-| Transaksi Pembelian  | Ya    | Tidak        |
-| Transaksi Penjualan  | Ya    | Ya           |
-| Master Data (CRUD)   | Penuh | Tanpa Delete |
-| Absensi & Penggajian | Ya    | Ya           |
-| Laporan & Export     | Ya    | Ya           |
-| Manajemen User       | Ya    | Tidak        |
-| Riwayat Aktivitas    | Ya    | Tidak        |
-
----
-
-## Tech Stack
-
-| Layer          | Teknologi                              |
-|----------------|----------------------------------------|
-| Framework      | Next.js 16 (App Router, TypeScript)    |
-| Styling        | Tailwind CSS 4 + shadcn/ui             |
-| Icons          | Lucide React                           |
-| Database       | Supabase (PostgreSQL)                  |
-| Auth           | Supabase Auth (Email + Password)       |
-| Storage        | Supabase Storage                       |
-| Forms          | React Hook Form + Zod                  |
-| Tables         | TanStack Table                         |
-| Charts         | Recharts                               |
-| PDF Export     | @react-pdf/renderer                    |
-| Excel Export   | SheetJS (xlsx)                         |
-| Deployment     | Vercel                                 |
+| Kategori | Teknologi |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Database | Supabase (PostgreSQL) |
+| Autentikasi | Supabase Auth + SSR |
+| Bahasa | TypeScript 5 |
+| Styling | Tailwind CSS v4 |
+| Komponen UI | Base UI, Radix UI, shadcn/ui |
+| Form | react-hook-form + Zod v4 |
+| Tabel | TanStack Table v8 |
+| Grafik | Recharts |
+| PDF | @react-pdf/renderer |
+| Excel | xlsx |
+| Notifikasi | Sonner |
 
 ---
 
-## Getting Started
+## Prasyarat
 
-### Prasyarat
+- Node.js 20 atau lebih baru
+- npm 10 atau lebih baru
+- Akun Supabase (free tier sudah cukup)
 
-- Node.js v18 atau lebih baru
-- Akun [Supabase](https://supabase.com/) (gratis)
+---
 
-### 1. Clone Repository
+## Cara Menjalankan
+
+### 1. Clone repositori
 
 ```bash
-git clone https://github.com/AnthonyWisnu/management-mebel.git
-cd management-mebel
+git clone <url-repo>
+cd management
 ```
 
-### 2. Install Dependencies
+### 2. Install dependensi
 
 ```bash
 npm install
 ```
 
-### 3. Setup Supabase
+### 3. Konfigurasi environment
 
-1. Buat project baru di [supabase.com](https://supabase.com)
-2. Buka **Settings > API** dan salin URL serta API keys
-3. Buka **SQL Editor** dan jalankan file migrasi secara berurutan:
-
-   | File | Keterangan |
-   |------|------------|
-   | `supabase/migrations/001_schema.sql` | Schema dan tabel utama |
-   | `supabase/migrations/002_rls.sql` | Row Level Security policies |
-   | `supabase/migrations/003_storage.sql` | Storage bucket untuk nota |
-   | `supabase/migrations/004_seed.sql` | Seed data awal |
-   | `supabase/migrations/005_rls_patch.sql` | Patch RLS tambahan |
-   | `supabase/migrations/006_users_management.sql` | Manajemen user |
-   | `supabase/migrations/007_stok_tracking.sql` | Trigger pelacakan stok |
-   | `supabase/migrations/008_audit_log.sql` | Tabel dan trigger audit log |
-   | `supabase/migrations/009_rls_security_patch2.sql` | Patch keamanan RLS |
-
-4. Buat user admin pertama:
-   - Buka **Authentication > Users > Add user > Create new user**
-   - Centang **Auto Confirm User**, lalu jalankan query berikut:
-
-   ```sql
-   UPDATE profiles
-   SET role = 'admin', nama = 'Administrator'
-   WHERE id = (
-     SELECT id FROM auth.users WHERE email = 'your@email.com'
-   );
-   ```
-
-### 4. Konfigurasi Environment
-
-Salin `.env.example` menjadi `.env.local` dan isi dengan kredensial Supabase:
-
-```bash
-cp .env.example .env.local
-```
+Buat file `.env.local` di root proyek:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-### 5. Jalankan Development Server
+Nilai URL dan anon key dapat ditemukan di dashboard Supabase pada menu Project Settings > API.
+
+### 4. Jalankan migrasi database
+
+Buka Supabase SQL Editor lalu jalankan file migrasi secara berurutan:
+
+```
+supabase/migrations/001_schema.sql
+supabase/migrations/002_rls.sql
+supabase/migrations/003_storage.sql
+supabase/migrations/004_seed.sql
+supabase/migrations/005_rls_patch.sql
+supabase/migrations/006_nota_storage.sql
+supabase/migrations/007_stok_tracking.sql
+supabase/migrations/008_audit_log.sql
+supabase/migrations/009_rls_security_patch2.sql
+supabase/migrations/010_hutang_piutang.sql
+```
+
+Setiap file harus dijalankan satu per satu, sesuai urutan nomor.
+
+### 5. (Opsional) Muat data dummy
+
+Untuk mengisi database dengan data contoh bulan April 2026:
+
+```
+supabase/migrations/seed_dummy_april2026.sql
+```
+
+Data dummy mencakup supplier, pelanggan, produk, karyawan, transaksi pembelian dan penjualan, absensi, penggajian, serta catatan hutang dan piutang.
+
+### 6. Buat akun admin pertama
+
+Di Supabase SQL Editor, jalankan perintah berikut setelah membuat akun melalui Supabase Auth > Users:
+
+```sql
+INSERT INTO public.profiles (id, email, nama, role)
+VALUES ('<user-uuid>', 'admin@example.com', 'Administrator', 'admin');
+```
+
+Ganti `<user-uuid>` dengan UUID dari akun yang sudah dibuat.
+
+### 7. Jalankan aplikasi
 
 ```bash
 npm run dev
 ```
 
-Aplikasi berjalan di [http://localhost:3000](http://localhost:3000).
+Buka `http://localhost:3000` di browser.
 
 ---
 
-## Struktur Project
+## Struktur Proyek
 
 ```
-management-mebel/
-├── app/
-│   ├── (auth)/login/            # Halaman autentikasi
-│   ├── (dashboard)/             # Halaman utama (protected)
-│   │   ├── audit-log/
-│   │   ├── dashboard/
-│   │   ├── absensi/
-│   │   ├── karyawan/
-│   │   ├── kategori/
-│   │   ├── laporan/
-│   │   ├── pelanggan/
-│   │   ├── pembelian/
-│   │   ├── penggajian/
-│   │   ├── penjualan/
-│   │   ├── produk/
-│   │   ├── supplier/
-│   │   └── users/
-│   └── api/upload/nota/         # API route upload file
-├── components/
-│   ├── charts/                  # Komponen grafik
-│   ├── dashboard/               # KPI cards
-│   ├── forms/                   # Form per modul
-│   ├── layout/                  # Sidebar, TopBar, DashboardShell
-│   ├── pdf/                     # Template PDF laporan dan slip gaji
-│   ├── tables/                  # DataTable reusable
-│   └── ui/                      # shadcn/ui components
-├── lib/
-│   ├── actions/                 # Server Actions per modul
-│   ├── supabase/                # Supabase client dan server helper
-│   ├── utils.ts                 # Utility functions (format, generate)
-│   └── validations/             # Zod schemas
-├── supabase/
-│   ├── migrations/              # SQL migration files
-│   └── SETUP.md
-├── types/
-│   └── index.ts                 # TypeScript type definitions
-└── proxy.ts                     # Route protection (auth middleware)
+management/
+|-- app/
+|   |-- (auth)/               # Halaman login
+|   `-- (dashboard)/          # Semua halaman setelah login
+|       |-- dashboard/
+|       |-- supplier/
+|       |-- pelanggan/
+|       |-- kategori/
+|       |-- produk/
+|       |-- karyawan/
+|       |-- pembelian/
+|       |-- penjualan/
+|       |-- hutang-piutang/
+|       |-- absensi/
+|       |-- penggajian/
+|       |-- laporan/
+|       |-- users/
+|       `-- audit-log/
+|-- components/
+|   |-- forms/                # Form input reusable
+|   |-- tables/               # DataTable
+|   |-- charts/               # Recharts wrappers
+|   |-- pdf/                  # Template PDF
+|   |-- layout/               # Sidebar, Header, Nav
+|   `-- ui/                   # Komponen dasar UI
+|-- lib/
+|   |-- actions/              # Server Actions Next.js
+|   |-- supabase/             # Client Supabase (server & browser)
+|   |-- validations/          # Skema Zod
+|   `-- utils/                # Utility functions
+|-- types/
+|   `-- index.ts              # Semua TypeScript interface
+`-- supabase/
+    `-- migrations/           # SQL schema dan seed
 ```
 
 ---
 
-## Database Schema
+## Peran Pengguna
 
-| Tabel              | Deskripsi                                           |
-|--------------------|-----------------------------------------------------|
-| `profiles`         | Data user, terhubung 1:1 ke `auth.users`            |
-| `supplier`         | Data supplier / pemasok                             |
-| `karyawan`         | Data karyawan beserta tarif gaji per shift          |
-| `pelanggan`        | Data pelanggan                                      |
-| `kategori_produk`  | Kategori produk                                     |
-| `produk`           | Data produk beserta stok                            |
-| `pembelian`        | Header transaksi pembelian                          |
-| `pembelian_item`   | Detail item pembelian                               |
-| `penjualan`        | Header transaksi penjualan                          |
-| `penjualan_item`   | Detail item penjualan (termasuk HPP)                |
-| `absensi`          | Catatan absensi harian karyawan                     |
-| `penggajian`       | Slip penggajian mingguan                            |
-| `audit_log`        | Log perubahan data transaksi dan penggajian         |
+### Admin
+Akses penuh ke semua fitur:
+- Master data (CRUD)
+- Transaksi pembelian dan penjualan (CRUD)
+- Hutang dan piutang (lihat dan catat pembayaran)
+- Manajemen karyawan dan absensi
+- Penggajian
+- Laporan dan ekspor
+- Manajemen akun pengguna
+- Audit log
 
-Semua tabel dilindungi Row Level Security (RLS) berdasarkan role user.
-
----
-
-## Deployment
-
-1. Push repository ke GitHub
-2. Import repository di [vercel.com](https://vercel.com)
-3. Tambahkan environment variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-4. Klik **Deploy**
-
-Setelah deploy, perbarui **Site URL** dan **Redirect URLs** di Supabase Dashboard > Authentication > URL Configuration dengan URL production Vercel.
+### Pegawai
+Akses terbatas:
+- Melihat data karyawan (tanpa hapus)
+- Membuat transaksi penjualan baru
+- Melihat absensi
+- Laporan terbatas
 
 ---
 
-## License
+## Catatan Teknis
 
-Project ini bersifat private dan digunakan untuk keperluan internal.
+### Sistem Hutang dan Piutang
+
+Hutang dan piutang tidak dibuat secara otomatis oleh trigger database. Logika pencatatan terjadi di server action (`lib/actions/hutang-piutang-helper.ts`) yang dipanggil saat transaksi pembelian atau penjualan dibuat, diubah, atau dihapus.
+
+Alur pencatatan:
+- Jika `total_dibayar < total`, selisih dicatat sebagai hutang (pembelian) atau piutang (penjualan)
+- Jika `total_dibayar > total`, kelebihan ditambahkan ke saldo kredit pihak terkait
+- Jika `total_dibayar == total`, transaksi langsung lunas tanpa catatan hutang atau piutang
+
+Karena alur ini berjalan di lapisan aplikasi bukan sebagai trigger SQL, data dummy di `seed_dummy_april2026.sql` mengisi tabel `hutang_piutang` secara manual dengan nilai yang sudah konsisten.
+
+### Soft Delete
+
+Semua tabel utama menggunakan kolom `deleted_at`. Data yang dihapus tidak benar-benar dihapus dari database, hanya ditandai dengan timestamp penghapusan. Semua query memfilter `deleted_at IS NULL` secara otomatis melalui RLS dan server actions.
+
+### Stok Produk
+
+Stok produk diperbarui oleh server action saat transaksi dibuat atau dihapus. Tidak ada trigger database untuk ini. Validasi stok negatif diterapkan di server action sebelum transaksi penjualan disimpan.

@@ -22,6 +22,7 @@ import {
 import { deletePelanggan } from "@/lib/actions/pelanggan"
 import type { Pelanggan } from "@/types"
 import type { Role } from "@/types"
+import { formatRupiah } from "@/lib/utils"
 
 interface PelangganPageClientProps {
   initialData: Pelanggan[]
@@ -83,6 +84,18 @@ export function PelangganPageClient({ initialData, role }: PelangganPageClientPr
       cell: ({ row }) => row.original.email ?? "-",
     },
     {
+      accessorKey: "saldo_kredit",
+      header: "Saldo Kredit",
+      cell: ({ row }) =>
+        row.original.saldo_kredit > 0 ? (
+          <span className="text-blue-600 font-medium tabular-nums text-sm">
+            {formatRupiah(row.original.saldo_kredit)}
+          </span>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        ),
+    },
+    {
       id: "aksi",
       header: "Aksi",
       cell: ({ row }) => (
@@ -134,6 +147,11 @@ export function PelangganPageClient({ initialData, role }: PelangganPageClientPr
                 <span className="text-sm text-muted-foreground flex items-center gap-1">
                   <Mail className="h-3.5 w-3.5" />
                   {p.email}
+                </span>
+              )}
+              {p.saldo_kredit > 0 && (
+                <span className="text-sm text-blue-600 font-medium">
+                  Kredit: {formatRupiah(p.saldo_kredit)}
                 </span>
               )}
             </div>

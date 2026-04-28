@@ -25,7 +25,19 @@ import { SearchableSelect } from "@/components/ui/searchable-select"
 import { deletePembelian } from "@/lib/actions/pembelian"
 import { cn, formatRupiah, formatTanggal } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import type { Pembelian, Supplier } from "@/types"
+import type { Pembelian, Supplier, StatusBayar } from "@/types"
+
+const STATUS_BAYAR_VARIANT: Record<StatusBayar, "default" | "secondary" | "destructive"> = {
+  lunas:       "default",
+  sebagian:    "secondary",
+  belum_lunas: "destructive",
+}
+
+const STATUS_BAYAR_LABEL: Record<StatusBayar, string> = {
+  lunas:       "Lunas",
+  sebagian:    "Sebagian",
+  belum_lunas: "Belum Bayar",
+}
 
 interface PembelianPageClientProps {
   initialData: Pembelian[]
@@ -108,6 +120,14 @@ export function PembelianPageClient({
       ),
     },
     {
+      accessorKey: "status_bayar",
+      header: "Status",
+      cell: ({ row }) => {
+        const s = (row.original.status_bayar ?? "lunas") as StatusBayar
+        return <Badge variant={STATUS_BAYAR_VARIANT[s]}>{STATUS_BAYAR_LABEL[s]}</Badge>
+      },
+    },
+    {
       id: "aksi",
       header: "Aksi",
       cell: ({ row }) => (
@@ -155,13 +175,16 @@ export function PembelianPageClient({
             <p className="text-muted-foreground text-sm mt-0.5">
               {p.supplier?.nama ?? "-"}
             </p>
-            <div className="flex items-center gap-3 mt-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2">
               <Badge variant="outline" className="text-xs">
                 {formatTanggal(p.tanggal)}
               </Badge>
               <span className="font-semibold tabular-nums text-sm">
                 {formatRupiah(p.total)}
               </span>
+              <Badge variant={STATUS_BAYAR_VARIANT[(p.status_bayar ?? "lunas") as StatusBayar]} className="text-xs">
+                {STATUS_BAYAR_LABEL[(p.status_bayar ?? "lunas") as StatusBayar]}
+              </Badge>
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">

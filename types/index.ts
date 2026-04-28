@@ -1,6 +1,7 @@
 export type Role = "admin" | "pegawai"
 export type TipeShift = "setengah_hari" | "satu_hari" | "lembur"
 export type StatusPenggajian = "draft" | "dibayar"
+export type StatusBayar = "lunas" | "sebagian" | "belum_lunas"
 
 export interface Profile {
   id: string
@@ -18,6 +19,7 @@ export interface Supplier {
   no_telp: string | null
   email: string | null
   catatan: string | null
+  saldo_kredit: number
   created_at: string
   updated_at: string | null
   deleted_at: string | null
@@ -45,6 +47,7 @@ export interface Pelanggan {
   no_telp: string | null
   email: string | null
   catatan: string | null
+  saldo_kredit: number
   created_at: string
   updated_at: string | null
   deleted_at: string | null
@@ -79,6 +82,8 @@ export interface Pembelian {
   tanggal: string
   supplier_id: string
   total: number
+  total_dibayar: number
+  status_bayar: StatusBayar
   catatan: string | null
   nota_url: string | null
   dibuat_oleh: string | null
@@ -108,6 +113,8 @@ export interface Penjualan {
   total_penjualan: number
   total_hpp: number
   profit: number
+  total_dibayar: number
+  status_bayar: StatusBayar
   catatan: string | null
   nota_url: string | null
   dibuat_oleh: string | null
@@ -160,4 +167,36 @@ export interface Penggajian {
   updated_at: string | null
   karyawan?: Karyawan
   absensi?: Absensi[]
+}
+
+export interface HutangPiutang {
+  id: string
+  tipe: "hutang" | "piutang"
+  sumber: "penjualan" | "pembelian"
+  sumber_id: string
+  pihak_tipe: "pelanggan" | "supplier"
+  pelanggan_id: string | null
+  supplier_id: string | null
+  nominal: number
+  saldo_terpakai: number
+  terbayar: number
+  sisa: number
+  status: StatusBayar
+  tanggal: string
+  jatuh_tempo: string | null
+  catatan: string | null
+  pelanggan?: Pick<Pelanggan, "id" | "nama">
+  supplier?: Pick<Supplier, "id" | "nama">
+  created_at: string
+  updated_at: string | null
+  deleted_at: string | null
+}
+
+export interface PembayaranHP {
+  id: string
+  hutang_piutang_id: string
+  jumlah: number
+  tanggal: string
+  catatan: string | null
+  created_at: string
 }
