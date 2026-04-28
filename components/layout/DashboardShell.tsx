@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { TopBar } from "@/components/layout/TopBar"
+import { InactivityWatcher } from "@/components/layout/InactivityWatcher"
 import type { Profile } from "@/types"
 
 interface DashboardShellProps {
@@ -31,6 +32,8 @@ export function DashboardShell({ profile, children }: DashboardShellProps) {
           {children}
         </main>
       </div>
+
+      <InactivityWatcher />
     </div>
   )
 }
