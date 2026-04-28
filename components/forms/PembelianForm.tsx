@@ -56,7 +56,6 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
       ? {
           tanggal: pembelian.tanggal,
           supplier_id: pembelian.supplier_id,
-          no_faktur: pembelian.no_faktur ?? "",
           catatan: pembelian.catatan ?? "",
           total_dibayar: pembelian.total_dibayar,
           items: pembelian.pembelian_item?.map((item) => ({
@@ -68,7 +67,6 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
       : {
           tanggal: new Date().toISOString().split("T")[0],
           supplier_id: "",
-          no_faktur: "",
           catatan: "",
           total_dibayar: 0,
           items: [DEFAULT_ITEM],
@@ -149,23 +147,6 @@ export function PembelianForm({ suppliers, produks, pembelian }: PembelianFormPr
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="no_faktur"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>No. Faktur</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Kosongkan untuk auto-generate"
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
             <FormField

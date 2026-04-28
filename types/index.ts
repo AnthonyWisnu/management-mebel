@@ -200,3 +200,33 @@ export interface PembayaranHP {
   catatan: string | null
   created_at: string
 }
+
+export type StatusPO = "pending" | "dalam_proses" | "selesai" | "dibatalkan"
+
+export interface PurchaseOrder {
+  id: string
+  no_po: string
+  tanggal_po: string
+  batas_waktu: string
+  pelanggan_id: string
+  status: StatusPO
+  total_estimasi: number
+  catatan: string | null
+  dibuat_oleh: string | null
+  created_at: string
+  updated_at: string | null
+  deleted_at: string | null
+  pelanggan?: Pick<Pelanggan, "id" | "nama" | "no_telp">
+  purchase_order_item?: POItem[]
+}
+
+export interface POItem {
+  id: string
+  po_id: string
+  deskripsi: string
+  qty: number
+  harga_satuan: number
+  subtotal: number
+  catatan: string | null
+  created_at: string
+}

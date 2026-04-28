@@ -56,7 +56,7 @@ export async function createPembelian(
   const profile = await requireAdmin()
   const supabase = await createClient()
 
-  const no_faktur = input.no_faktur?.trim() || generateNoFaktur("PB")
+  const no_faktur = generateNoFaktur("PB")
   const total = input.items.reduce(
     (sum, item) => sum + Math.round(Number(item.qty) * Number(item.harga_beli_satuan)),
     0
@@ -140,12 +140,10 @@ export async function updatePembelian(
   )
 
   const totalDibayar = Number(input.total_dibayar ?? total)
-  const no_faktur = input.no_faktur?.trim() || null
 
   const updateData: Record<string, unknown> = {
     tanggal: input.tanggal,
     supplier_id: input.supplier_id,
-    no_faktur,
     catatan: input.catatan || null,
     total,
     total_dibayar: totalDibayar,
@@ -185,7 +183,7 @@ export async function updatePembelian(
     totalDibayarLama: Number(lama?.total_dibayar ?? total),
     tanggal: input.tanggal,
     dibuatOleh: profile.id,
-    noFaktur: no_faktur,
+    noFaktur: lama?.no_faktur ?? null,
   })
 
   await supabase

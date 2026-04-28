@@ -63,7 +63,6 @@ export function PenjualanForm({
       ? {
           tanggal: penjualan.tanggal,
           pelanggan_id: penjualan.pelanggan_id,
-          no_faktur: penjualan.no_faktur ?? "",
           catatan: penjualan.catatan ?? "",
           total_dibayar: penjualan.total_dibayar,
           items: penjualan.penjualan_item?.map((item) => ({
@@ -76,7 +75,6 @@ export function PenjualanForm({
       : {
           tanggal: new Date().toISOString().split("T")[0],
           pelanggan_id: "",
-          no_faktur: "",
           catatan: "",
           total_dibayar: 0,
           items: [DEFAULT_ITEM],
@@ -175,23 +173,6 @@ export function PenjualanForm({
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="no_faktur"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>No. Faktur</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Kosongkan untuk auto-generate"
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
             <FormField

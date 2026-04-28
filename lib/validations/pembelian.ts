@@ -9,7 +9,6 @@ export const pembelianItemSchema = z.object({
 export const pembelianSchema = z.object({
   tanggal: z.string().min(1, "Tanggal wajib diisi"),
   supplier_id: z.string().min(1, "Supplier wajib dipilih"),
-  no_faktur: z.string().optional(),
   catatan: z.string().optional(),
   total_dibayar: z.coerce.number().min(0, "Tidak boleh negatif").default(0),
   items: z.array(pembelianItemSchema).min(1, "Minimal 1 item harus ditambahkan"),

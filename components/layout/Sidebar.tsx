@@ -17,6 +17,7 @@ import {
   UserCog,
   History,
   CreditCard,
+  ClipboardList,
 } from "lucide-react"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
@@ -59,6 +60,11 @@ const NAV_SECTIONS: NavSection[] = [
   {
     label: "Transaksi",
     items: [
+      {
+        href: "/purchase-order",
+        label: "Purchase Order",
+        icon: ClipboardList,
+      },
       {
         href: "/pembelian",
         label: "Pembelian",

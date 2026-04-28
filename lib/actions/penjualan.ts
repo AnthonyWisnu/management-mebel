@@ -87,7 +87,7 @@ export async function createPenjualan(
   const stokError = await validateStok(supabase, input.items)
   if (stokError.error) return stokError
 
-  const no_faktur = input.no_faktur?.trim() || generateNoFaktur("PJ")
+  const no_faktur = generateNoFaktur("PJ")
 
   const total_penjualan = input.items.reduce(
     (sum, item) => sum + Math.round(Number(item.qty) * Number(item.harga_jual_satuan)),
@@ -214,12 +214,10 @@ export async function updatePenjualan(
   }
 
   const totalDibayar = Number(input.total_dibayar ?? total_penjualan)
-  const no_faktur = input.no_faktur?.trim() || null
 
   const updateData: Record<string, unknown> = {
     tanggal: input.tanggal,
     pelanggan_id: input.pelanggan_id,
-    no_faktur,
     catatan: input.catatan || null,
     total_penjualan,
     total_hpp,
@@ -265,7 +263,7 @@ export async function updatePenjualan(
     totalDibayarLama: Number(lama?.total_dibayar ?? total_penjualan),
     tanggal: input.tanggal,
     dibuatOleh: profile.id,
-    noFaktur: no_faktur,
+    noFaktur: lama?.no_faktur ?? null,
   })
 
   await supabase
