@@ -28,7 +28,7 @@ export async function getSuppliers(query?: string): Promise<Supplier[]> {
 export async function createSupplier(
   data: SupplierInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase.from("supplier").insert({
@@ -48,7 +48,7 @@ export async function updateSupplier(
   id: string,
   data: SupplierInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase

@@ -28,7 +28,7 @@ export async function getKategori(query?: string): Promise<KategoriProduk[]> {
 export async function createKategori(
   data: KategoriInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase.from("kategori_produk").insert({
@@ -45,7 +45,7 @@ export async function updateKategori(
   id: string,
   data: KategoriInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase

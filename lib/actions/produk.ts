@@ -28,7 +28,7 @@ export async function getProduk(query?: string): Promise<Produk[]> {
 export async function uploadFotoProduk(
   formData: FormData
 ): Promise<{ url?: string; error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const file = formData.get("file") as File | null
@@ -48,7 +48,7 @@ export async function uploadFotoProduk(
 }
 
 export async function deleteFotoProduk(url: string): Promise<void> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const path = url.split("/produk-foto/").pop()
@@ -60,7 +60,7 @@ export async function deleteFotoProduk(url: string): Promise<void> {
 export async function createProduk(
   data: ProdukInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase.from("produk").insert({
@@ -80,7 +80,7 @@ export async function updateProduk(
   id: string,
   data: ProdukInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase

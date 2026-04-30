@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
-import { requireAdmin } from "@/lib/actions/auth"
+import { requireAdmin, requireAuth } from "@/lib/actions/auth"
 import { generateNoFaktur } from "@/lib/utils"
 import type { PembelianInput } from "@/lib/validations/pembelian"
 import type { Pembelian, Supplier } from "@/types"
@@ -15,7 +15,7 @@ export interface PembelianFilters {
 }
 
 export async function getPembelians(filters?: PembelianFilters): Promise<Pembelian[]> {
-  await requireAdmin()
+  await requireAuth()
   const supabase = await createClient()
 
   let q = supabase
@@ -35,7 +35,7 @@ export async function getPembelians(filters?: PembelianFilters): Promise<Pembeli
 }
 
 export async function getPembelianById(id: string): Promise<Pembelian | null> {
-  await requireAdmin()
+  await requireAuth()
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -230,7 +230,7 @@ export async function deletePembelian(id: string): Promise<{ error?: string }> {
 }
 
 export async function getSupplierOptions(): Promise<Supplier[]> {
-  await requireAdmin()
+  await requireAuth()
   const supabase = await createClient()
   const { data } = await supabase
     .from("supplier")

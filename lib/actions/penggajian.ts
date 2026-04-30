@@ -66,7 +66,7 @@ export async function getPenggajianById(id: string): Promise<Penggajian | null> 
 export async function generatePenggajian(
   input: GeneratePenggajianInput
 ): Promise<{ error?: string; count?: number; skipped?: number }> {
-  const profile = await requireAdmin()
+  const profile = await requireAuth()
   const supabase = await createClient()
 
   const { data: absensis, error: errAbsensi } = await supabase
@@ -128,7 +128,7 @@ export async function generatePenggajian(
 export async function createPenggajianManual(
   input: TambahPenggajianManualInput
 ): Promise<{ error?: string }> {
-  const profile = await requireAdmin()
+  const profile = await requireAuth()
   const supabase = await createClient()
 
   const { error } = await supabase.from("penggajian").insert({
@@ -151,7 +151,7 @@ export async function updatePenggajian(
   id: string,
   input: UpdatePenggajianInput
 ): Promise<{ error?: string }> {
-  await requireAdmin()
+  await requireAuth()
   const supabase = await createClient()
 
   const { error } = await supabase
@@ -171,7 +171,7 @@ export async function updatePenggajian(
 }
 
 export async function tandaiDibayar(id: string): Promise<{ error?: string }> {
-  await requireAdmin()
+  await requireAuth()
   const supabase = await createClient()
 
   const { error } = await supabase

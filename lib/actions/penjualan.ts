@@ -80,9 +80,9 @@ export async function createPenjualan(
   input: PenjualanInput,
   nota_url?: string | null
 ): Promise<{ error?: string; id?: string }> {
-  const profile = await requireAuth()
+  const profile = await requireAdmin()
   const supabase = await createClient()
-  const isAdmin = profile.role === "admin"
+  const isAdmin = true
 
   const stokError = await validateStok(supabase, input.items)
   if (stokError.error) return stokError
@@ -168,9 +168,9 @@ export async function updatePenjualan(
   input: PenjualanInput,
   nota_url?: string | null
 ): Promise<{ error?: string }> {
-  const profile = await requireAuth()
+  const profile = await requireAdmin()
   const supabase = await createClient()
-  const isAdmin = profile.role === "admin"
+  const isAdmin = true
 
   const { data: lama } = await supabase
     .from("penjualan")

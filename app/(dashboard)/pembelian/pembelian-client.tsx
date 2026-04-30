@@ -42,11 +42,13 @@ const STATUS_BAYAR_LABEL: Record<StatusBayar, string> = {
 interface PembelianPageClientProps {
   initialData: Pembelian[]
   suppliers: Supplier[]
+  isAdmin: boolean
 }
 
 export function PembelianPageClient({
   initialData,
   suppliers,
+  isAdmin,
 }: PembelianPageClientProps) {
   const router = useRouter()
   const [deleteTarget, setDeleteTarget] = useState<Pembelian | null>(null)
@@ -143,22 +145,26 @@ export function PembelianPageClient({
               <FileImage className="h-4 w-4 text-muted-foreground" />
             </a>
           )}
-          <Link
-            href={`/pembelian/${row.original.id}/edit`}
-            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
-            aria-label="Edit"
-          >
-            <Pencil className="h-4 w-4" />
-          </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-destructive hover:text-destructive"
-            onClick={() => setDeleteTarget(row.original)}
-            aria-label="Hapus"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {isAdmin && (
+            <Link
+              href={`/pembelian/${row.original.id}/edit`}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+              aria-label="Edit"
+            >
+              <Pencil className="h-4 w-4" />
+            </Link>
+          )}
+          {isAdmin && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-destructive hover:text-destructive"
+              onClick={() => setDeleteTarget(row.original)}
+              aria-label="Hapus"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       ),
     },
@@ -199,22 +205,26 @@ export function PembelianPageClient({
                 <FileImage className="h-4 w-4 text-muted-foreground" />
               </a>
             )}
-            <Link
-              href={`/pembelian/${p.id}/edit`}
-              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
-              aria-label="Edit"
-            >
-              <Pencil className="h-4 w-4" />
-            </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-destructive hover:text-destructive"
-              onClick={() => setDeleteTarget(p)}
-              aria-label="Hapus"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            {isAdmin && (
+              <Link
+                href={`/pembelian/${p.id}/edit`}
+                className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+                aria-label="Edit"
+              >
+                <Pencil className="h-4 w-4" />
+              </Link>
+            )}
+            {isAdmin && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-destructive hover:text-destructive"
+                onClick={() => setDeleteTarget(p)}
+                aria-label="Hapus"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>
@@ -238,10 +248,12 @@ export function PembelianPageClient({
           )}
         </Button>
 
-        <Link href="/pembelian/baru" className={cn(buttonVariants())}>
-          <Plus className="h-4 w-4 mr-2" />
-          Tambah Pembelian
-        </Link>
+        {isAdmin && (
+          <Link href="/pembelian/baru" className={cn(buttonVariants())}>
+            <Plus className="h-4 w-4 mr-2" />
+            Tambah Pembelian
+          </Link>
+        )}
       </div>
 
       {showFilter && (

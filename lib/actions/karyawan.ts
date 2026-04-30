@@ -28,7 +28,7 @@ export async function getKaryawan(query?: string): Promise<Karyawan[]> {
 export async function createKaryawan(
   data: KaryawanInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase.from("karyawan").insert({
@@ -51,7 +51,7 @@ export async function updateKaryawan(
   id: string,
   data: KaryawanInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase

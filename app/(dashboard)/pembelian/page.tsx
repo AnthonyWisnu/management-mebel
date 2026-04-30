@@ -1,11 +1,11 @@
-import { requireAdmin } from "@/lib/actions/auth"
+import { requireAuth } from "@/lib/actions/auth"
 import { getPembelians, getSupplierOptions } from "@/lib/actions/pembelian"
 import { PembelianPageClient } from "./pembelian-client"
 
 export const metadata = { title: "Transaksi Pembelian" }
 
 export default async function PembelianPage() {
-  await requireAdmin()
+  const profile = await requireAuth()
 
   const [pembelians, suppliers] = await Promise.all([
     getPembelians(),
@@ -20,7 +20,11 @@ export default async function PembelianPage() {
           Kelola transaksi pembelian dari supplier
         </p>
       </div>
-      <PembelianPageClient initialData={pembelians} suppliers={suppliers} />
+      <PembelianPageClient
+        initialData={pembelians}
+        suppliers={suppliers}
+        isAdmin={profile.role === "admin"}
+      />
     </div>
   )
 }

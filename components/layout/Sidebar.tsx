@@ -69,7 +69,6 @@ const NAV_SECTIONS: NavSection[] = [
         href: "/pembelian",
         label: "Pembelian",
         icon: ShoppingCart,
-        adminOnly: true,
       },
       { href: "/penjualan", label: "Penjualan", icon: ShoppingBag },
       {

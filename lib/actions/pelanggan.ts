@@ -28,7 +28,7 @@ export async function getPelanggan(query?: string): Promise<Pelanggan[]> {
 export async function createPelanggan(
   data: PelangganInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase.from("pelanggan").insert({
@@ -48,7 +48,7 @@ export async function updatePelanggan(
   id: string,
   data: PelangganInput
 ): Promise<{ error?: string }> {
-  await requireAuth()
+  await requireAdmin()
   const supabase = await createClient()
 
   const { error } = await supabase
