@@ -122,9 +122,10 @@ function InlineStatusSelect({
 interface POPageClientProps {
   initialData: PurchaseOrder[]
   pelangganList: Pick<Pelanggan, "id" | "nama">[]
+  isAdmin: boolean
 }
 
-export function POPageClient({ initialData, pelangganList }: POPageClientProps) {
+export function POPageClient({ initialData, pelangganList, isAdmin }: POPageClientProps) {
   const router = useRouter()
   const [deleteTarget, setDeleteTarget] = useState<PurchaseOrder | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -202,9 +203,15 @@ export function POPageClient({ initialData, pelangganList }: POPageClientProps) 
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
-        <InlineStatusSelect po={row.original} onChanged={() => router.refresh()} />
-      ),
+      cell: ({ row }) =>
+        isAdmin ? (
+          <InlineStatusSelect po={row.original} onChanged={() => router.refresh()} />
+        ) : (
+          <Badge variant={STATUS_VARIANT[row.original.status]} className="flex items-center gap-1 w-fit text-xs">
+            {STATUS_ICON[row.original.status]}
+            {STATUS_LABEL[row.original.status]}
+          </Badge>
+        ),
     },
     {
       accessorKey: "total_estimasi",
@@ -215,10 +222,10 @@ export function POPageClient({ initialData, pelangganList }: POPageClientProps) 
         </span>
       ),
     },
-    {
+    ...(isAdmin ? [{
       id: "aksi",
       header: "Aksi",
-      cell: ({ row }) => (
+      cell: ({ row }: { row: { original: PurchaseOrder } }) => (
         <div className="flex items-center gap-1">
           <Link
             href={`/purchase-order/${row.original.id}/edit`}
@@ -238,7 +245,7 @@ export function POPageClient({ initialData, pelangganList }: POPageClientProps) 
           </Button>
         </div>
       ),
-    },
+    }] as ColumnDef<PurchaseOrder>[] : []),
   ]
 
   const mobileCard = (po: PurchaseOrder) => {
@@ -263,30 +270,39 @@ export function POPageClient({ initialData, pelangganList }: POPageClientProps) 
                 )}
               </div>
               <div className="mt-2">
-                <InlineStatusSelect po={po} onChanged={() => router.refresh()} />
+                {isAdmin ? (
+                  <InlineStatusSelect po={po} onChanged={() => router.refresh()} />
+                ) : (
+                  <Badge variant={STATUS_VARIANT[po.status]} className="flex items-center gap-1 w-fit text-xs">
+                    {STATUS_ICON[po.status]}
+                    {STATUS_LABEL[po.status]}
+                  </Badge>
+                )}
               </div>
               <p className="font-semibold tabular-nums text-sm mt-2">
                 {formatRupiah(po.total_estimasi)}
               </p>
             </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <Link
-                href={`/purchase-order/${po.id}/edit`}
-                className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
-                aria-label="Edit"
-              >
-                <Pencil className="h-4 w-4" />
-              </Link>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-destructive hover:text-destructive"
-                onClick={() => setDeleteTarget(po)}
-                aria-label="Hapus"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
+            {isAdmin && (
+              <div className="flex items-center gap-1 shrink-0">
+                <Link
+                  href={`/purchase-order/${po.id}/edit`}
+                  className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+                  aria-label="Edit"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => setDeleteTarget(po)}
+                  aria-label="Hapus"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -308,10 +324,12 @@ export function POPageClient({ initialData, pelangganList }: POPageClientProps) 
           )}
         </Button>
 
-        <Link href="/purchase-order/baru" className={cn(buttonVariants())}>
-          <Plus className="h-4 w-4 mr-2" />
-          Tambah PO
-        </Link>
+        {isAdmin && (
+          <Link href="/purchase-order/baru" className={cn(buttonVariants())}>
+            <Plus className="h-4 w-4 mr-2" />
+            Tambah PO
+          </Link>
+        )}
       </div>
 
       {showFilter && (
@@ -366,7 +384,7 @@ export function POPageClient({ initialData, pelangganList }: POPageClientProps) 
         emptyDescription="Tambah PO baru untuk mulai mencatat pesanan masuk."
       />
 
-      <AlertDialog
+      {isAdmin && <AlertDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
       >
@@ -390,7 +408,7 @@ export function POPageClient({ initialData, pelangganList }: POPageClientProps) 
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>}
     </>
   )
 }

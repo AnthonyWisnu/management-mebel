@@ -280,10 +280,12 @@ export function PenjualanPageClient({
           )}
         </Button>
 
-        <Link href="/penjualan/baru" className={cn(buttonVariants())}>
-          <Plus className="h-4 w-4 mr-2" />
-          Tambah Penjualan
-        </Link>
+        {isAdmin && (
+          <Link href="/penjualan/baru" className={cn(buttonVariants())}>
+            <Plus className="h-4 w-4 mr-2" />
+            Tambah Penjualan
+          </Link>
+        )}
       </div>
 
       {showFilter && (

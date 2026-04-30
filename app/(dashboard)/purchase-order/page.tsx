@@ -5,7 +5,7 @@ import { POPageClient } from "./po-client"
 export const metadata = { title: "Purchase Order" }
 
 export default async function PurchaseOrderPage() {
-  await requireAuth()
+  const profile = await requireAuth()
 
   const [orders, pelangganList] = await Promise.all([
     getPurchaseOrders(),
@@ -20,7 +20,11 @@ export default async function PurchaseOrderPage() {
           Kelola pesanan masuk dan pantau deadline pengerjaan
         </p>
       </div>
-      <POPageClient initialData={orders} pelangganList={pelangganList} />
+      <POPageClient
+        initialData={orders}
+        pelangganList={pelangganList}
+        isAdmin={profile.role === "admin"}
+      />
     </div>
   )
 }
